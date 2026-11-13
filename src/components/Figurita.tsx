@@ -1,303 +1,209 @@
-import { useState, type MouseEvent, type ReactNode } from "react";
+import { useState, type MouseEvent } from "react";
 import { ArrowUpRight } from "lucide-react";
 
 interface FiguritaProps {
-  numero: number | string;
+  numero: string;
   titulo: string;
   descripcion: string;
-  stats: { label: string; value: string | number }[];
-  esBrillante?: boolean;
-  link?: string;
+  stats: { label: string; value: string }[];
   imagen?: string;
-  ajusteImagen?: "cover" | "contain";
-  linkTexto?: string;
+  esBrillante?: boolean;
+  /** Ocupa toda la celda de la grilla en lugar de usar proporción fija. */
   compacta?: boolean;
-  /** Si se pasa, el dorso muestra un botón "Ver más" que abre el modal. */
-  onVerMas?: () => void;
-  /** Ícono grande para el frente (por ejemplo, el clima). */
-  icono?: ReactNode;
-  /** Aplica un filtro sutil para integrar la imagen a la paleta editorial. */
-  tinte?: boolean;
+  /** Identificador del proyecto que se abre en el modal. */
+  slug?: string;
+  onVerProyecto?: (slug: string) => void;
 }
 
-function GloboMarca({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1"
-      className={className}
-    >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18" />
-      <path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18" />
-    </svg>
-  );
-}
-
-export const Figurita = ({
+export function Figurita({
   numero,
   titulo,
   descripcion,
   stats,
-  esBrillante = false,
-  link,
   imagen,
-  ajusteImagen = "cover",
-  linkTexto = "VER PROYECTO",
+  esBrillante = false,
   compacta = false,
-  onVerMas,
-  icono,
-  tinte = false,
-}: FiguritaProps) => {
-  const [flipped, setFlipped] = useState(false);
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [hovered, setHovered] = useState(false);
+  slug,
+  onVerProyecto,
+}: FiguritaProps) {
+  const [girada, setGirada] = useState(false);
+  const [imagenRota, setImagenRota] = useState(false);
+  const [brillo, setBrillo] = useState({ x: 50, y: 50, visible: false });
+  // Proporción real de la portada (ancho / alto), se conoce al cargar la imagen.
+  const [proporcion, setProporcion] = useState(0);
 
-  // Las rutas internas navegan en la misma pestaña; los archivos y links externos abren aparte
-  const esArchivo = /\.(mp4|webm|mov|pdf)$/i.test(link ?? "");
-  const mismaPestania = (link?.startsWith("/") ?? false) && !esArchivo;
+  const tieneImagen = Boolean(imagen) && !imagenRota;
+  const puedeAbrir = Boolean(slug && onVerProyecto);
+  const statsVisibles = stats.slice(0, compacta ? 2 : 4);
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (flipped) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPosition({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
+  /*
+   * La tarjeta toma la forma de su portada: horizontal si la imagen es
+   * horizontal, vertical si es vertical. Se limita entre 0.62 y 1.05 para
+   * que el dorso siempre tenga lugar. Sin imagen: proporción clásica 2.5/3.5.
+   */
+  const forma = proporcion ? Math.min(1.05, Math.max(0.62, proporcion * 0.82)) : 2.5 / 3.5;
+  const estiloTarjeta = compacta
+    ? { aspectRatio: forma, width: `min(100cqw, 100cqh * ${forma})` }
+    : undefined;
+
+  const moverBrillo = (e: MouseEvent<HTMLDivElement>) => {
+    const caja = e.currentTarget.getBoundingClientRect();
+    setBrillo({
+      x: ((e.clientX - caja.left) / caja.width) * 100,
+      y: ((e.clientY - caja.top) / caja.height) * 100,
+      visible: true,
     });
   };
 
-  const tieneImagen = Boolean(imagen);
-  const tieneIcono = Boolean(icono);
-  const mostrarTituloEnFrente = !tieneImagen && !tieneIcono;
-
   return (
     <div
-      className={`group perspective-1000 w-full ${
-        compacta ? "h-full min-h-0" : ""
-      }`}
+      className={`perspective-1000 w-full ${compacta ? "flex h-full min-h-0 items-center justify-center" : ""}`}
+      style={compacta ? { containerType: "size" } : undefined}
     >
       <div
-        onClick={() => setFlipped(!flipped)}
         role="button"
         tabIndex={0}
-        aria-label={`${titulo} — girar figurita`}
+        aria-pressed={girada}
+        aria-label={`${titulo}: dar vuelta la figurita`}
+        onClick={() => setGirada(!girada)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            setFlipped((v) => !v);
+            setGirada(!girada);
           }
         }}
-        className={`relative w-full cursor-pointer transition-transform duration-700 transform-style-3d ${
-          compacta ? "h-full" : "aspect-[2.5/3.5]"
-        } ${flipped ? "rotate-y-180" : "hover:-translate-y-1 hover:scale-[1.015]"}`}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseMove={moverBrillo}
+        onMouseLeave={() => setBrillo({ ...brillo, visible: false })}
+        style={estiloTarjeta}
+        className={`figurita relative transition-transform duration-700 transform-style-3d ${
+          compacta ? "" : "aspect-[2.5/3.5] w-full"
+        } ${girada ? "rotate-y-180" : "hover:-translate-y-1"}`}
       >
-        {/* --- FRENTE --- */}
-        <div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-white/40 bg-cream p-2 shadow-2xl shadow-night/25 backface-hidden">
-          {/* luz suave de estudio */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_75%_at_50%_-15%,rgba(255,112,74,0.32),transparent_62%)]"
-          />
-          <div
-            aria-hidden="true"
-            className="pattern-grid pointer-events-none absolute inset-0 opacity-60"
-          />
-
-          <div className="relative z-10 flex h-full min-h-0 flex-col">
-            <div className="absolute left-0 top-0 z-20 flex items-center gap-1 rounded-full border border-white/15 bg-night/90 px-2 py-0.5 font-mono text-[9px] font-medium leading-none text-cream shadow-lg shadow-night/30 backdrop-blur">
-              <span className="h-1 w-1 rounded-full bg-orange" />#{numero}
-            </div>
-
-            <div
-              className={`relative min-h-0 flex-1 overflow-hidden rounded-xl ${
-                mostrarTituloEnFrente
-                  ? "bg-gradient-to-br from-orange via-[#ff8a6b] to-[#ffb199]"
-                  : "bg-night"
-              }`}
-            >
-              {tieneImagen ? (
-                <>
-                  <img
-                    src={imagen}
-                    alt={titulo}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                    className={`h-full w-full ${
-                      ajusteImagen === "contain" ? "object-contain p-2" : "object-cover"
-                    } ${tinte ? "saturate-[0.78] contrast-[1.05] sepia-[0.12]" : ""}`}
-                  />
-                  {tinte && (
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/80 via-orange/15 to-transparent mix-blend-multiply"
-                    />
-                  )}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink/70 to-transparent"
-                  />
-                </>
-              ) : tieneIcono ? (
-                <div className="flex h-full w-full items-center justify-center p-2">
-                  {icono}
-                </div>
-              ) : (
-                <div className="relative flex h-full w-full items-center justify-center p-3 text-center">
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-[radial-gradient(90%_70%_at_50%_120%,rgba(30,42,68,0.35),transparent_70%)]"
-                  />
-                  <h3 className="relative line-clamp-4 break-words font-display text-xl font-black uppercase leading-[0.9] tracking-tight text-night md:text-2xl">
-                    {titulo}
-                  </h3>
-                </div>
-              )}
-
-              <GloboMarca className="pointer-events-none absolute bottom-1.5 right-1.5 h-3.5 w-3.5 text-white/60" />
-            </div>
-
-            <div className="flex shrink-0 items-center justify-between gap-1 px-0.5 pb-0.5 pt-1.5">
-              <div className="min-w-0">
-                {!mostrarTituloEnFrente && (
-                  <span className="block truncate font-display text-[12px] font-bold leading-none tracking-tight text-night">
-                    {titulo}
-                  </span>
-                )}
-                <span className="mt-1 block font-mono text-[7px] uppercase tracking-[0.26em] text-night/45">
-                  Cortese 2026
-                </span>
-              </div>
-              <span
-                aria-hidden="true"
-                className="shrink-0 font-display text-sm font-light leading-none text-night/30"
-              >
-                +
-              </span>
-            </div>
+        {/* ---------------- FRENTE ---------------- */}
+        <div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-[#1E2A44]/10 bg-white p-2 shadow-xl shadow-[#1E2A44]/15 backface-hidden">
+          <div className="flex shrink-0 items-center justify-between pb-1.5">
+            <span className="rounded-full bg-[#1E2A44] px-2 py-0.5 font-mono text-[9px] font-bold leading-none text-[#F2EFE7]">
+              #{numero}
+            </span>
+            <span aria-hidden="true" className="font-display text-sm font-light leading-none text-[#FF704A]">
+              +
+            </span>
           </div>
 
-          {/* BRILLO HOLOGRÁFICO */}
-          {esBrillante && !flipped && (
+          {/* La imagen define su propio marco: se ve completa, sin recortes. */}
+          <div className="relative min-h-0 flex-1 overflow-hidden rounded-xl bg-[#F2EFE7]">
+            {tieneImagen ? (
+              <div className="absolute inset-0 flex items-center justify-center p-1.5">
+                <img
+                  src={imagen}
+                  alt={titulo}
+                  loading="lazy"
+                  onLoad={(e) => setProporcion(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)}
+                  onError={() => setImagenRota(true)}
+                  className="block h-auto max-h-full w-auto max-w-full rounded-lg object-contain shadow-md shadow-[#1E2A44]/15"
+                />
+              </div>
+            ) : (
+              <div className="absolute inset-0 flex flex-col justify-between bg-[#FF704A] p-3">
+                <span aria-hidden="true" className="font-display text-lg font-light leading-none text-[#1E2A44]">
+                  ↗
+                </span>
+                <h3 className="line-clamp-3 break-words font-display text-[20px] font-black uppercase leading-[0.9] tracking-tight text-[#1E2A44]">
+                  {titulo}
+                </h3>
+              </div>
+            )}
+          </div>
+
+          <div className="flex shrink-0 items-end justify-between gap-2 pt-1.5">
+            <div className="min-w-0">
+              <span className="block truncate font-display text-[12px] font-bold leading-tight text-[#1E2A44]">
+                {titulo}
+              </span>
+              <span className="block font-mono text-[7px] uppercase tracking-[0.24em] text-[#1E2A44]/45">
+                Cortese 2026
+              </span>
+            </div>
+            <span className="shrink-0 font-mono text-[7px] uppercase tracking-[0.18em] text-[#1E2A44]/40">
+              Girar
+            </span>
+          </div>
+
+          {/* Brillo holográfico que sigue al mouse */}
+          {esBrillante && (
             <div
+              aria-hidden="true"
               className="pointer-events-none absolute inset-0 rounded-2xl mix-blend-soft-light transition-opacity duration-300"
               style={{
-                opacity: hovered ? 0.9 : 0,
-                background: `radial-gradient(circle at ${position.x}% ${position.y}%, rgba(255,255,255,0.95) 0%, rgba(255,112,74,0.6) 22%, rgba(242,239,231,0.25) 45%, transparent 65%)`,
+                opacity: brillo.visible && !girada ? 0.85 : 0,
+                background: `radial-gradient(circle at ${brillo.x}% ${brillo.y}%, rgba(255,255,255,0.95) 0%, rgba(255,112,74,0.55) 25%, transparent 60%)`,
               }}
             />
           )}
         </div>
 
-        {/* --- DORSO --- */}
+        {/* ---------------- DORSO ---------------- */}
         <div
-          className={`absolute inset-0 flex rotate-y-180 flex-col overflow-hidden rounded-2xl border border-white/12 bg-night text-cream shadow-2xl shadow-night/40 backface-hidden ${
+          className={`absolute inset-0 flex rotate-y-180 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#1E2A44] text-[#F2EFE7] shadow-xl shadow-[#1E2A44]/30 backface-hidden ${
             compacta ? "p-2.5" : "p-4"
           }`}
         >
-          {/* profundidad: glows + ondas + ruido */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(95%_70%_at_100%_0%,rgba(255,112,74,0.42),transparent_62%)]"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_65%_at_0%_100%,rgba(255,255,255,0.12),transparent_70%)]"
-          />
-          <div
-            aria-hidden="true"
-            className="pattern-waves pointer-events-none absolute inset-0 opacity-70"
-          />
-          <GloboMarca className="pointer-events-none absolute -bottom-3 -right-3 h-14 w-14 text-white/[0.06]" />
-
-          <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-            <div className="flex shrink-0 items-start justify-between gap-2">
-              <h3
-                className={`min-w-0 font-display font-bold uppercase leading-tight text-cream ${
-                  compacta ? "line-clamp-2 text-[12px]" : "text-base"
-                }`}
-              >
-                {titulo}
-              </h3>
-              <span className="shrink-0 rounded-full bg-gradient-to-r from-orange to-[#ff8a6b] px-1.5 py-0.5 font-mono text-[8px] font-bold leading-none text-night shadow-sm shadow-orange/40">
-                #{numero}
-              </span>
-            </div>
-
-            <p
-              className={`figurita-desc line-clamp-2 mt-1.5 min-h-0 shrink-0 font-light leading-snug text-cream/70 ${
-                compacta ? "line-clamp-3 text-[9px]" : "line-clamp-4 text-xs"
+          <div className="flex shrink-0 items-start justify-between gap-2">
+            <h3
+              className={`line-clamp-2 min-w-0 font-display font-bold uppercase leading-tight ${
+                compacta ? "text-[12px]" : "text-base"
               }`}
             >
-              {descripcion || "Sin descripción disponible."}
-            </p>
-
-            <div className="mt-2 grid shrink-0 grid-cols-2 gap-1.5">
-              {stats.map((stat, i) => (
-                <div
-                  key={`${stat.label}-${i}`}
-                  className={`min-w-0 rounded-lg border border-white/10 bg-white/[0.07] backdrop-blur-md ${
-                    compacta ? "px-1.5 py-1" : "px-2 py-1.5"
-                  } ${
-                    stats.length % 2 === 1 && i === stats.length - 1 ? "col-span-2" : ""
-                  }`}
-                >
-                  <span className="block truncate font-mono text-[7px] uppercase leading-none tracking-[0.14em] text-orange">
-                    {stat.label}
-                  </span>
-                  <span
-                    className={`mt-1 block truncate font-display font-bold leading-tight text-cream ${
-                      compacta ? "text-[9px]" : "text-[11px]"
-                    }`}
-                  >
-                    {stat.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-auto shrink-0 pt-2">
-              {onVerMas ? (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onVerMas();
-                  }}
-                  tabIndex={flipped ? 0 : -1}
-                  className={`flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-orange to-[#ff8a6b] font-display font-bold uppercase tracking-[0.1em] text-night shadow-lg shadow-orange/25 transition-all hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-cream ${
-                    compacta ? "py-1.5 text-[8px]" : "py-2.5 text-[10px]"
-                  }`}
-                >
-                  Ver más
-                  <ArrowUpRight size={compacta ? 11 : 14} strokeWidth={2.5} />
-                </button>
-              ) : link ? (
-                <a
-                  href={link}
-                  target={mismaPestania ? undefined : "_blank"}
-                  rel={mismaPestania ? undefined : "noopener noreferrer"}
-                  onClick={(e) => e.stopPropagation()}
-                  tabIndex={flipped ? 0 : -1}
-                  className={`flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-orange to-[#ff8a6b] text-center font-display font-bold uppercase tracking-[0.1em] text-night shadow-lg shadow-orange/25 transition-all hover:brightness-110 ${
-                    compacta ? "py-1.5 text-[8px]" : "py-2.5 text-[10px]"
-                  }`}
-                >
-                  {linkTexto}
-                  <ArrowUpRight size={compacta ? 10 : 12} strokeWidth={2.5} />
-                </a>
-              ) : null}
-            </div>
+              {titulo}
+            </h3>
+            <span className="shrink-0 rounded-full bg-[#FF704A] px-1.5 py-0.5 font-mono text-[8px] font-bold leading-none text-[#1E2A44]">
+              #{numero}
+            </span>
           </div>
+
+          {/* min-h-0 + line-clamp: el texto se corta con "…" y nunca empuja el botón */}
+          <p
+            className={`mt-1.5 min-h-0 overflow-hidden font-light leading-snug text-[#F2EFE7]/75 ${
+              compacta ? "line-clamp-3 text-[9px]" : "line-clamp-5 text-xs"
+            }`}
+          >
+            {descripcion}
+          </p>
+
+          <dl className="my-2 grid shrink-0 grid-cols-2 gap-1.5">
+            {statsVisibles.map((stat, i) => (
+              <div
+                key={stat.label}
+                className={`min-w-0 rounded-lg border border-white/10 bg-white/[0.06] px-1.5 py-1 ${
+                  statsVisibles.length % 2 === 1 && i === statsVisibles.length - 1 ? "col-span-2" : ""
+                }`}
+              >
+                <dt className="truncate font-mono text-[7px] uppercase leading-none tracking-[0.14em] text-[#FF704A]">
+                  {stat.label}
+                </dt>
+                <dd className="mt-1 truncate font-display text-[10px] font-bold leading-tight">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {puedeAbrir && (
+            <button
+              type="button"
+              tabIndex={girada ? 0 : -1}
+              onClick={(e) => {
+                e.stopPropagation();
+                onVerProyecto?.(slug as string);
+              }}
+              className={`mt-auto flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#FF704A] font-display font-bold uppercase tracking-[0.1em] text-[#1E2A44] transition-colors hover:bg-[#F2EFE7] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2EFE7] ${
+                compacta ? "py-1.5 text-[9px]" : "py-2.5 text-[11px]"
+              }`}
+            >
+              Ver proyecto
+              <ArrowUpRight size={compacta ? 12 : 14} strokeWidth={2.5} />
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
-};
+}

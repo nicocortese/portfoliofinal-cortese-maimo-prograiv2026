@@ -1,3 +1,9 @@
+/* ------------------------------------------------------------------ */
+/* SECCIONES DEL ÁLBUM (páginas 05 a 12)                               */
+/* Cada sección tiene una intro (página izquierda) y sus figuritas     */
+/* (página derecha). El "slug" conecta la figurita con el modal.       */
+/* ------------------------------------------------------------------ */
+
 export interface AlbumStat {
   label: string;
   value: string;
@@ -9,45 +15,36 @@ export interface AlbumFigure {
   descripcion: string;
   stats: AlbumStat[];
   imagen?: string;
-  ajusteImagen?: "cover" | "contain";
-  link?: string;
-  linkTexto?: string;
   esBrillante?: boolean;
-  /** Conecta la figurita con el detalle que se muestra en el modal. */
-  slug?: string;
+  slug: string;
 }
 
-export interface AlbumPageData {
-  page: string;
-  label: string;
+export interface AlbumSection {
+  id: string;
+  indice: string;
   titulo: string;
-  subtitulo: string;
-  ruta: string;
+  bajada: string;
+  enfoques: string[];
+  /** Imagen de la intro de la sección. */
+  portada: string;
   figures: AlbumFigure[];
 }
 
-export const DISCIPLINA_LINKS: { label: string; href: string }[] = [
-  { label: "UX / UI", href: "#uxui" },
-  { label: "Diseño Gráfico", href: "#diseno-grafico" },
-  { label: "Audiovisual", href: "#video" },
-  { label: "Redes Sociales", href: "#redes" },
-];
-
-// --- PÁGINA 03 · UX/UI ---
-export const ALBUM_UXUI: AlbumPageData = {
-  page: "05",
-  label: "UX/UI",
-  titulo: "UX/UI Design",
-  subtitulo:
-    "Interfaces, prototipado y sistemas de diseño pensados desde la usabilidad.",
-  ruta: "#uxui",
+// --- PÁGINAS 05 · 06 · UX/UI ---
+export const ALBUM_UXUI: AlbumSection = {
+  id: "uxui",
+  indice: "01",
+  titulo: "UX / UI",
+  bajada: "Interfaces pensadas desde la persona que las usa, del flujo al último detalle.",
+  enfoques: ["Investigación y flujos", "Wireframes y prototipos", "Sistemas de diseño"],
+  portada: "/assets/uxui.jpg",
   figures: [
     {
       numero: "11",
       titulo: "MyMusicDesk",
       slug: "mymusicdesk",
       descripcion:
-        "Diseño de interfaz y usabilidad para una rocola en la sala de estar de la Universidad Maimónides. El foco estuvo en resolver la interacción en pantalla mediante selección táctil para moverse, claridad en los estados del sistema y una sección para visibilizar artistas de la universidad.",
+        "Diseño de interfaz y usabilidad para una rocola en la sala de estar de la Universidad Maimónides: selección táctil, estados claros del sistema y una sección para artistas de la universidad.",
       imagen: "/assets/mymusicdesk.png",
       esBrillante: true,
       stats: [
@@ -59,14 +56,13 @@ export const ALBUM_UXUI: AlbumPageData = {
     {
       numero: "12",
       titulo: "Tótem Universitario",
+      slug: "totem-universitario",
       descripcion:
-        "Diseño de interfaz de tótem para docentes de la Universidad Maimónides. El proyecto se centró en la accesibilidad física y cognitiva del usuario mediante botones de gran formato con alto contraste, una tipografía legible en diferentes distancias y una arquitectura de navegación reducida y directa, optimizada para flujos ágiles de interacción estimados entre 1 y 2 minutos por docente antes de iniciar su clase.",
+        "Interfaz de tótem para docentes de la Universidad Maimónides, centrada en la accesibilidad física y cognitiva con flujos de 1 a 2 minutos.",
       imagen: "/assets/mockuptotem.jpg",
       esBrillante: true,
-      linkTexto: "VER PROTOTIPO",
-      link: "https://www.figma.com/proto/CtvOtjeBKGaJFSsvzVImAa/Viaje-de-usuario-Cortese?node-id=292-4&viewport=304%2C327%2C0.08&t=aj6yLcyrhVVx22iF-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=292%3A4&page-id=289%3A2",
       stats: [
-        { label: "Categoría", value: "Tótem interactivo" },
+        { label: "Categoría", value: "Tótem" },
         { label: "Año", value: "2025" },
         { label: "Herramientas", value: "Figma · Accesibilidad" },
       ],
@@ -74,11 +70,10 @@ export const ALBUM_UXUI: AlbumPageData = {
     {
       numero: "13",
       titulo: "Olympichub",
+      slug: "olympichub",
       descripcion:
-        "Diseño de una aplicación de los Juegos Olímpicos centrada en facilitar la exploración de atletas y disciplinas mediante buscadores, perfiles individuales, información deportiva y un sistema de favoritos para personalizar la experiencia del usuario en vivo.",
+        "App de los Juegos Olímpicos para explorar atletas y disciplinas con buscadores, perfiles y un sistema de favoritos.",
       imagen: "/assets/oly.jpg",
-      linkTexto: "VER PROTOTIPO",
-      link: "https://www.figma.com/proto/SZR5VNR5f0XBPUtUM2I7Cd/Proyecto-app?node-id=961-780&p=f&viewport=-1916%2C-865%2C0.28&t=pOanZjXnkiGy3wMb-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=961%3A780&page-id=788%3A29",
       stats: [
         { label: "Categoría", value: "App móvil" },
         { label: "Año", value: "2024" },
@@ -88,21 +83,21 @@ export const ALBUM_UXUI: AlbumPageData = {
   ],
 };
 
-// --- PÁGINA 04 · DISEÑO GRÁFICO ---
-export const ALBUM_DISENO: AlbumPageData = {
-  page: "07",
-  label: "Diseño Gráfico",
-  titulo: "Diseño Gráfico",
-  subtitulo:
-    "Branding, identidad visual y composición aplicada a piezas reales.",
-  ruta: "#diseno-grafico",
+// --- PÁGINAS 07 · 08 · DISEÑO GRÁFICO ---
+export const ALBUM_DISENO: AlbumSection = {
+  id: "diseno",
+  indice: "02",
+  titulo: "Diseño gráfico",
+  bajada: "Identidad, piezas y sistemas visuales con criterio y coherencia de marca.",
+  enfoques: ["Identidad visual", "Piezas gráficas", "Sistemas de marca"],
+  portada: "/assets/disenografico.jpg",
   figures: [
     {
       numero: "14",
       titulo: "UmaiVerse",
       slug: "umaiverse",
       descripcion:
-        "Sistema de identidad visual completo para un canal de streaming: concepto, público objetivo, moodboard, paleta cromática, tipografía, logotipo y sus variantes, aplicado a afiches, folleto, volante y piezas para redes.",
+        "Sistema de identidad visual completo para un canal de streaming: concepto, público, moodboard, paleta, tipografía, logotipo y quince piezas aplicadas.",
       imagen: "/assets/posterumaiverse.jpg",
       esBrillante: true,
       stats: [
@@ -114,24 +109,23 @@ export const ALBUM_DISENO: AlbumPageData = {
   ],
 };
 
-// --- PÁGINA 05 · AUDIOVISUAL ---
-export const ALBUM_VIDEO: AlbumPageData = {
-  page: "09",
-  label: "Audiovisual",
-  titulo: "Edición de Video",
-  subtitulo:
-    "Montaje, colorimetría y ritmo narrativo para piezas horizontales y verticales.",
-  ruta: "#video",
+// --- PÁGINAS 09 · 10 · VIDEO ---
+export const ALBUM_VIDEO: AlbumSection = {
+  id: "video",
+  indice: "03",
+  titulo: "Video",
+  bajada: "Montaje, colorimetría y ritmo narrativo para piezas horizontales y verticales.",
+  enfoques: ["Edición y montaje", "Color grading", "Piezas para redes"],
+  portada: "/assets/ediciondevideos.jpg",
   figures: [
     {
       numero: "15",
-      titulo: "Sesión Musical / Videoclip",
+      titulo: "Videoclip",
+      slug: "videoclip",
       descripcion:
-        "Edición y postproducción para el videoclip oficial de una artista emergente independiente. Si bien formé parte de todo el proceso de montaje y ensamble visual de la pieza, mi foco principal estuvo en el tratamiento de colorimetría y color grading, buscando consolidar una atmósfera visual envolvente y cinematográfica acorde a la narrativa estética del tema musical.",
+        "Edición y postproducción del videoclip de una artista emergente, con foco en colorimetría y color grading cinematográfico.",
       imagen: "/assets/postervideoclip.png",
       esBrillante: true,
-      link: "/videos/videoclipmejorado.mp4",
-      linkTexto: "VER PIEZA",
       stats: [
         { label: "Formato", value: "Videoclip" },
         { label: "Rol", value: "Edición & Color" },
@@ -141,11 +135,10 @@ export const ALBUM_VIDEO: AlbumPageData = {
     {
       numero: "16",
       titulo: "Spot Publicitario",
+      slug: "spot-publicitario",
       descripcion:
-        "Montaje y postproducción completa para spot publicitario institucional y comercial. Mi trabajo se centró en la curaduría y descarte de todo el material grabado, definiendo la estructura narrativa y el ritmo de corte de cada escena para construir una pieza ágil, contundente y alineada a los objetivos comunicacionales de la campaña.",
+        "Montaje y postproducción de un spot institucional y comercial: curaduría del material, estructura narrativa y ritmo de corte.",
       imagen: "/assets/posterpublicidad.png",
-      link: "/videos/publicidad.mp4",
-      linkTexto: "VER PIEZA",
       stats: [
         { label: "Formato", value: "Comercial" },
         { label: "Cliente", value: "Maimónides · Rappi" },
@@ -155,8 +148,10 @@ export const ALBUM_VIDEO: AlbumPageData = {
     {
       numero: "17",
       titulo: "Reels & Verticales",
+      slug: "reels",
       descripcion:
-        "Edición y montaje de videos cortos para redes sociales, pensados para retener a la audiencia desde el primer segundo mediante cortes rítmicos, dinamismo visual y diseño sonoro.",
+        "Videos cortos para redes pensados para retener desde el primer segundo: cortes rítmicos, dinamismo visual y diseño sonoro.",
+      imagen: "" /* RUTA_IMAGEN_AQUI: /assets/portada-reels.jpg */,
       stats: [
         { label: "Formato", value: "9:16" },
         { label: "Piezas", value: "05" },
@@ -166,25 +161,23 @@ export const ALBUM_VIDEO: AlbumPageData = {
   ],
 };
 
-// --- PÁGINA 06 · REDES SOCIALES ---
-export const ALBUM_REDES: AlbumPageData = {
-  page: "11",
-  label: "Redes Sociales",
-  titulo: "Contenido Digital",
-  subtitulo:
-    "Estrategia de comunicación visual y producción de contenido integral.",
-  ruta: "#redes",
+// --- PÁGINAS 11 · 12 · REDES ---
+export const ALBUM_REDES: AlbumSection = {
+  id: "redes",
+  indice: "04",
+  titulo: "Redes",
+  bajada: "Estrategia de comunicación visual y contenido que se ve bien y se entiende rápido.",
+  enfoques: ["Línea gráfica", "Historias y publicaciones", "Piezas promocionales"],
+  portada: "/assets/redessociales.jpg",
   figures: [
     {
       numero: "18",
       titulo: "Paseo Güemes Hotel",
+      slug: "paseo-guemes",
       descripcion:
-        "Desarrollo desde cero de toda la línea gráfica para redes sociales, construyendo la identidad visual en base a los colores, la tipografía y el logotipo del hotel. Diseño de las publicaciones e historias, integrando piezas promocionales pensadas para impulsar las ventas y posicionar al hotel como el lugar ideal para hospedarse al visitar Salta, manteniendo un estilo visual atractivo y coherente en cada pieza.",
+        "Línea gráfica para redes desarrollada desde cero sobre los colores, la tipografía y el logotipo del hotel, con piezas promocionales para impulsar ventas.",
       imagen: "/assets/logopaseoguemes.jpg",
-      ajusteImagen: "contain",
       esBrillante: true,
-      link: "https://www.instagram.com/paseoguemeshotel/",
-      linkTexto: "VER EN INSTAGRAM",
       stats: [
         { label: "Categoría", value: "Instagram & Facebook" },
         { label: "Cliente", value: "Paseo Güemes" },
@@ -194,12 +187,10 @@ export const ALBUM_REDES: AlbumPageData = {
     {
       numero: "19",
       titulo: "Hotel Real Cafayate",
+      slug: "real-cafayate",
       descripcion:
-        "Diseño y evolución visual del contenido norteño, trabajando sobre una identidad gráfica preexistente. Tomé como base la paleta y el branding establecido del hotel para diseñar publicaciones, historias y piezas promocionales, renovando el estilo visual de las campañas para lograr piezas más atractivas, modernas y alineadas a los objetivos comerciales.",
+        "Evolución visual del contenido sobre una identidad preexistente: publicaciones, historias y promociones más modernas y alineadas a objetivos comerciales.",
       imagen: "/assets/logocafayate.png",
-      ajusteImagen: "contain",
-      link: "https://www.instagram.com/hotelrealcafayate/",
-      linkTexto: "VER EN INSTAGRAM",
       stats: [
         { label: "Categoría", value: "Instagram & Facebook" },
         { label: "Cliente", value: "Real Cafayate" },
@@ -208,3 +199,5 @@ export const ALBUM_REDES: AlbumPageData = {
     },
   ],
 };
+
+export const SECCIONES = [ALBUM_UXUI, ALBUM_DISENO, ALBUM_VIDEO, ALBUM_REDES];

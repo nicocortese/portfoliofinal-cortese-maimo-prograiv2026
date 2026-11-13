@@ -1,128 +1,42 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import LibroInteractivo from "../components/libro/LibroInteractivo.tsx";
+import LibroInteractivo, { type RepoData } from "../components/libro/LibroInteractivo.tsx";
+import { FRONTEND_PROJECTS, GITHUB_USER } from "../data/projectsData";
 
-// --- FIGURITA DINÁMICA: CLIMA DE BUENOS AIRES (server-side) ---
-const WEATHER_API_KEY = import.meta.env.OPENWEATHER_API_KEY;
-const WEATHER_ENDPOINT = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-  "Buenos Aires,AR",
-)}&units=metric&lang=es&appid=${WEATHER_API_KEY}`;
-
-interface OpenWeatherResponse {
-  weather: { id: number; main: string; description: string }[];
-  main: { temp: number };
-}
-
-interface EstadoNico {
-  temp: number;
-  icono: string;
-  condicion: "sol" | "lluvia" | "nubes" | "frio";
-  cielo: string;
-  estado: string;
-  modo: "Estudio" | "Outdoor" | "Híbrido";
-  error: boolean;
-}
-
-async function fetchClima(): Promise<EstadoNico> {
+/*
+ * Repositorios desde la API de GitHub (se piden al generar el sitio).
+ * El campo "homepage" de cada repo es el link de Vercel que muestra el álbum.
+ * El clima, en cambio, se pide en vivo desde el navegador (ClimaWidget).
+ */
+async function fetchRepos(): Promise<RepoData[]> {
   try {
-    const response = await fetch(WEATHER_ENDPOINT);
-
-    if (!response.ok) {
-      throw new Error(`OpenWeather respondió con estado ${response.status}`);
-    }
-
-    const data = (await response.json()) as OpenWeatherResponse;
-    const temp = Math.round(data.main.temp);
-    const weather = data.weather?.[0];
-    const cieloRaw = weather?.description ?? "sin datos";
-    const cielo = cieloRaw.charAt(0).toUpperCase() + cieloRaw.slice(1);
-
-    const llueve = weather ? weather.id >= 200 && weather.id < 600 : false;
-
-    let icono: string;
-    let condicion: EstadoNico["condicion"];
-    let estado: string;
-    let modo: EstadoNico["modo"];
-
-    if (llueve || temp < 18) {
-      icono = llueve ? "🌧️" : "🥶";
-      condicion = llueve ? "lluvia" : "frio";
-      estado =
-        "El clima pide termo de mate, maquetar componentes y tirar renders en After Effects.";
-      modo = "Estudio";
-    } else if (temp >= 24) {
-      icono = "☀️";
-      condicion = "sol";
-      estado = "Es una tarde perfecta para un fulbito y salir a sacar fotos.";
-      modo = "Outdoor";
-    } else {
-      icono = "🌤️";
-      condicion = "nubes";
-      estado =
-        "Un buen equilibrio entre avanzar con código frontend y relajar un rato.";
-      modo = "Híbrido";
-    }
-
-    return { temp, icono, condicion, cielo, estado, modo, error: false };
-  } catch (e) {
-    console.error("No se pudo obtener el clima de Buenos Aires:", e);
-
-    return {
-      temp: 20,
-      icono: "🌤️",
-      condicion: "nubes",
-      cielo: "No disponible",
-      estado:
-        "No pude consultar el clima, pero el plan sigue: código frontend y un mate.",
-      modo: "Híbrido",
-      error: true,
-    };
-  }
-}
-
-const clima = await fetchClima();
-
-// --- FIGURITAS DE GITHUB (server-side, para la página 14) ---
-const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME ?? "nicocortese";
-const REPOS_ENDPOINT = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=30`;
-
-const FEATURED_REPOS = [
-  "fixea-web",
-  "retro-kicks-frontend",
-  "maimo-progra3-2025-tpfinalfrontend-cortese",
-  "maimo-progra3-2025-tp2-cortese",
-];
-
-interface GithubRepo {
-  name: string;
-  description: string | null;
-  html_url: string;
-  language: string | null;
-  stargazers_count: number;
-  pushed_at: string;
-}
-
-async function fetchRepos(): Promise<GithubRepo[]> {
-  try {
-    const response = await fetch(REPOS_ENDPOINT, {
-      headers: {
-        Accept: "application/vnd.github+json",
-        "User-Agent": `${GITHUB_USERNAME}-portfolio`,
-        ...(import.meta.env.GITHUB_TOKEN
-          ? { Authorization: `Bearer ${import.meta.env.GITHUB_TOKEN}` }
-          : {}),
+    const token = import.meta.env.GITHUB_TOKEN;
+    const respuesta = await fetch(
+      `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`,
+      {
+        headers: {
+          Accept: "application/vnd.github+json",
+          "User-Agent": "portfolio-album-2026",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       },
-    });
+    );
+    if (!respuesta.ok) return [];
 
-    if (!response.ok) return [];
-
-    const data = (await response.json()) as GithubRepo[];
+    const data = (await respuesta.json()) as RepoData[];
+    const nombres = FRONTEND_PROJECTS.map((proyecto) => proyecto.repo);
 
     return data
-      .filter((repo) => FEATURED_REPOS.includes(repo.name))
-      .sort(
-        (a, b) => FEATURED_REPOS.indexOf(a.name) - FEATURED_REPOS.indexOf(b.name),
-      );
+      .filter((repo) => nombres.includes(repo.name))
+      .map((repo) => ({
+        name: repo.name,
+        description: repo.description,
+        html_url: repo.html_url,
+        homepage: repo.homepage,
+        language: repo.language,
+        stargazers_count: repo.stargazers_count,
+        pushed_at: repo.pushed_at,
+      }));
   } catch {
     return [];
   }
@@ -131,83 +45,8 @@ async function fetchRepos(): Promise<GithubRepo[]> {
 const repos = await fetchRepos();
 ---
 
-<Layout title="Álbum de Figuritas 2026 | Nicolás Cortese">
-  <main
-    class="relative flex h-screen w-screen items-center justify-center overflow-hidden bg-night"
-  >
-    <!-- MALLAS, ONDAS Y RUIDO -->
-    <div
-      aria-hidden="true"
-      class="pattern-grid-light pointer-events-none absolute inset-0 opacity-30">
-    </div>
-    <div
-      aria-hidden="true"
-      class="pattern-waves pointer-events-none absolute inset-0 opacity-40">
-    </div>
-    <div
-      aria-hidden="true"
-      class="noise-layer pointer-events-none absolute inset-0">
-    </div>
-
-    <!-- HALO DE LUZ SOBRE LA MESA -->
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_45%_at_50%_45%,rgba(255,112,74,0.16),transparent_70%)]">
-    </div>
-
-    <!-- PROFUNDIDAD BAJO EL LIBRO -->
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute left-1/2 top-1/2 h-[72vh] w-[72vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0A1128]/50 blur-[100px]">
-    </div>
-
-    <!-- ELEMENTOS DE IDENTIDAD: CRUCES FINAS Y GLOBO -->
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1"
-      class="pointer-events-none absolute left-8 top-8 h-5 w-5 text-white/15"
-    >
-      <path d="M12 4v16M4 12h16" />
-    </svg>
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1"
-      class="pointer-events-none absolute bottom-8 right-8 h-5 w-5 text-white/15"
-    >
-      <path d="M12 4v16M4 12h16" />
-    </svg>
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="0.9"
-      class="pointer-events-none absolute -bottom-24 left-[6%] h-72 w-72 text-white/[0.04]"
-    >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18" />
-      <path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18" />
-    </svg>
-
-    <div class="relative h-full w-full">
-      <LibroInteractivo
-        client:only="react"
-        clima={{
-          temp: clima.temp,
-          icono: clima.icono,
-          condicion: clima.condicion,
-          cielo: clima.cielo,
-          estado: clima.estado,
-          modo: clima.modo,
-        }}
-        repos={repos}
-      />
-    </div>
+<Layout title="Álbum 2026 | Nicolás Cortese">
+  <main class="h-screen w-screen overflow-hidden bg-night">
+    <LibroInteractivo client:only="react" repos={repos} />
   </main>
 </Layout>
