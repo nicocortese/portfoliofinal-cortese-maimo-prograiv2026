@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 configura el tema en CSS con @theme.
+ * No hace falta tailwind.config.mjs: estas variables generan
+ * utilidades como font-display, font-sans, bg-cream, text-night, etc.
+ */
+@theme {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  --color-cream: #f2efe7;
+  --color-night: #1e2a44;
+  --color-ink: #0a1128;
+  --color-orange: #ff704a;
+}
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background-color: #f2efe7;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+/* Cursor nativo: mano en elementos interactivos, sin círculo custom. */
+button,
+a,
+[role="button"] {
+  cursor: pointer;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* TEXTURA DE RUIDO                                                    */
+/* Rompe la planitud digital sin ensuciar la lectura: el grano queda   */
+/* debajo del contenido posicionado (z-10) y arriba del fondo.         */
+/* ------------------------------------------------------------------ */
+/* El contenedor que la usa debe ser position: relative (o absolute).
+ * No lo forzamos acá para no romper capas absolutas del fondo. */
+.texture-noise {
+  isolation: isolate;
+}
+
+.texture-noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.17;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Capa de ruido independiente para fondos (no toca position). */
+.noise-layer {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+}
+
+/* Contenedor de página del libro: habilita unidades cqh para escalar
+ * tipografía según la altura REAL de la página, no del viewport. */
+.page-container {
+  container-type: size;
+  container-name: page;
+}
+
+/* En páginas bajas, el rol de la experiencia pasa a una línea para
+ * liberar altura y evitar que se recorte el último logro. */
+@container page (max-height: 560px) {
+  .experiencia-role {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+
+  .figurita-desc {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* PATRONES                                                           */
+/* ------------------------------------------------------------------ */
+.pattern-grid {
+  background-image:
+    linear-gradient(to right, rgba(30, 42, 68, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 42, 68, 0.07) 1px, transparent 1px);
+  background-size: 26px 26px;
+  background-position: center;
+}
+
+.pattern-grid-light {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 30px 30px;
+  background-position: center;
+}
+
+/* Ondas concéntricas suaves para fondos oscuros. */
+.pattern-waves {
+  background-image: repeating-radial-gradient(
+    ellipse 140% 90% at 50% 128%,
+    rgba(255, 255, 255, 0.06) 0 1px,
+    transparent 1px 38px
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* GLASSMORPHISM                                                      */
+/* ------------------------------------------------------------------ */
+.glass-panel {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.055) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* ------------------------------------------------------------------ */
+/* 3D / FLIP                                                          */
+/* ------------------------------------------------------------------ */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* El flipbook arma su propio stacking context: evitamos que las páginas
+ * vecinas se recorten con overflow hidden en el wrapper. */
+.libro {
+  margin: 0 auto;
+  filter: drop-shadow(0 35px 60px rgba(6, 12, 28, 0.55));
+}
