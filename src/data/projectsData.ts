@@ -1,3 +1,5 @@
+import { Zap, type LucideIcon } from "lucide-react";
+
 /* ------------------------------------------------------------------ */
 /* PROYECTOS FRONTEND (páginas 13 · 14)                                */
 /* Se combinan con la API de GitHub: si el repo tiene "homepage"       */
@@ -14,8 +16,12 @@ export interface FrontendProject {
   description: string[];
   technologies: string[];
   date: string;
-  /** Portada gráfica. Vacío = se muestra una portada tipográfica. */
+  /** Portada gráfica (logo). Vacío = se usa logoInteractivo o una portada tipográfica. */
   cover: string;
+  /** true si el logo es claro y necesita fondo oscuro para verse. */
+  fondoOscuro?: boolean;
+  /** Logo dibujado con código: ícono de lucide sobre un degradado. */
+  logoInteractivo?: { Icono: LucideIcon; degradado: string };
   vercelUrl: string;
   githubUrl: string;
   highlights: { title: string; detail: string }[];
@@ -23,7 +29,7 @@ export interface FrontendProject {
 
 export const GITHUB_USER = "nicocortese";
 
-export const FRONTEND_PROJECTS = [
+export const FRONTEND_PROJECTS: FrontendProject[] = [
   {
     slug: "fixea-web",
     repo: "fixea-web",
@@ -35,9 +41,10 @@ export const FRONTEND_PROJECTS = [
       "Fixea nació para resolver la fragmentación en la gestión de tareas de desarrollo y diseño multimedia.",
       "Integra un dashboard con métricas clave, autenticación segura y conexión fluida mediante una extensión de navegador nativa.",
     ],
-    technologies: ["Next.js", "React", "Tailwind CSS", "Chrome API", "Node.js"],
+    technologies: ["HTML", "Next.js", "React", "Tailwind CSS", "Chrome API", "Node.js"],
     date: "2026",
     cover: "/assets/logos/fixea.png",
+    fondoOscuro: true,
     vercelUrl: "https://fixea-web.vercel.app",
     githubUrl: "https://github.com/nicocortese/fixea-web",
     highlights: [
@@ -47,7 +54,7 @@ export const FRONTEND_PROJECTS = [
   },
   {
     slug: "dashboard-extension-umai",
-    repo: "dashboard-extension-umai",
+    repo: "proyecto1-cortese-maimo-prograiv2026",
     title: "Gestioná",
     subtitle: "Panel interactivo de métricas de Universidad Maimónides",
     summary:
@@ -56,9 +63,10 @@ export const FRONTEND_PROJECTS = [
       "Desarrollo de un panel interactivo para la gestión y visualización de datos de actividades de extensión de la universidad.",
       "Integración en tiempo real con Google Sheets API y renderizado de métricas dinámicas mediante la librería Recharts.",
     ],
-    technologies: ["React", "Vite", "Recharts", "Google Sheets API"],
+    technologies: ["HTML", "React", "Vite", "Recharts", "Google Sheets API"],
     date: "2026",
-    cover: `<div class="w-full h-full flex items-center justify-center bg-[#F2EFE7]"><div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap text-white" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg></div></div>`,
+    cover: "",
+    logoInteractivo: { Icono: Zap, degradado: "from-indigo-500 via-purple-500 to-pink-500" },
     vercelUrl: "https://gestiona-umai.vercel.app/",
     githubUrl: "https://github.com/nicocortese/proyecto1-cortese-maimo-prograiv2026",
     highlights: [
@@ -76,7 +84,7 @@ export const FRONTEND_PROJECTS = [
       "Desarrollo e-commerce enfocado en la estética retro de los 2000s adaptada a una experiencia web moderna.",
       "Modelado de datos en MongoDB, API REST con Express y frontend responsivo de alto rendimiento.",
     ],
-    technologies: ["React", "Next.js", "Tailwind CSS", "Node.js", "MongoDB"],
+    technologies: ["HTML", "React", "Next.js", "Tailwind CSS", "Node.js", "MongoDB"],
     date: "2025",
     cover: "/assets/logos/retrokicks.png",
     vercelUrl: "https://retro-kicks.vercel.app/",
@@ -96,7 +104,7 @@ export const FRONTEND_PROJECTS = [
       "Segundo trabajo práctico de la materia Programación III de la Universidad Maimónides.",
       "Maquetación con componentes en React y consumo de datos desde una API externa de películas (TMDB).",
     ],
-    technologies: ["React", "Next.js", "CSS"],
+    technologies: ["HTML", "CSS", "React", "Next.js"],
     date: "2025",
     cover: "/assets/logos/logotp2.svg",
     vercelUrl: "https://maimo-progra3-2025-tp2-cortese.vercel.app/",

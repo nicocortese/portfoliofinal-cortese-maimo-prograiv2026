@@ -17,6 +17,8 @@ export interface EducacionItem {
   institucion: string;
   detalle: string;
   enCurso?: boolean;
+  /** Logo de la institución. Vacío = ícono de birrete. */
+  logo?: string;
 }
 
 export interface Hobby {
@@ -57,14 +59,15 @@ export const SKILLS: { diseno: Skill[]; codigo: Skill[] } = {
   diseno: [
     { nombre: "Figma", logo: "/assets/logos/figma.svg" },
     { nombre: "Photoshop", logo: "/assets/logos/photoshop.svg" },
-    { nombre: "Illustrator", logo: "/assets/logos/illustrator.svg"},
-    { nombre: "Premiere Pro", logo: "/assets/logos/premiere.svg"  },
+    { nombre: "Illustrator", logo: "/assets/logos/illustrator.svg" },
+    { nombre: "Premiere Pro", logo: "/assets/logos/premiere.svg" },
     { nombre: "After Effects", logo: "/assets/logos/aftereffects.svg" },
   ],
   codigo: [
+    { nombre: "HTML", logo: "/assets/logos/html.svg" },
     { nombre: "Astro", logo: "/assets/logos/astro.svg" },
     { nombre: "React", logo: "/assets/logos/react.svg" },
-    { nombre: "TypeScript", logo: "/assets/logos/typescript.svg" }, 
+    { nombre: "TypeScript", logo: "/assets/logos/typescript.svg" },
     { nombre: "Tailwind", logo: "/assets/logos/tailwind.svg" },
     { nombre: "Git", logo: "/assets/logos/git.svg" },
   ],
@@ -81,12 +84,11 @@ export const HOBBIES: Hobby[] = [
   },
   {
     numero: "09",
-    titulo: "Fútbol",
+    titulo: "Mate",
     descripcion: "Tener siempre el mate al lado.",
     stat: { label: "Ritual", value: "Diario" },
     imagen: "/assets/hobbies/mate.jpg",
   },
-  
   {
     numero: "10",
     titulo: "Música",
@@ -162,8 +164,15 @@ export const EXPERIENCIAS: ExperienciaItem[] = [
 ];
 
 // --- PÁGINA 04 · EDUCACIÓN ---
-/* VERIFICAR: completá títulos y años exactos. */
+/* Orden cronológico: secundario → universidad → próximas formaciones. */
 export const EDUCACION: EducacionItem[] = [
+  {
+    period: "" /* COMPLETAR_AÑOS: ej. "2017 – 2022" */,
+    titulo: "Bachiller" /* COMPLETAR_TÍTULO */,
+    institucion: "Colegio secundario" /* COMPLETAR_NOMBRE_DEL_COLEGIO */,
+    detalle: "" /* COMPLETAR_DETALLE (opcional) */,
+    logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/colegio.png */,
+  },
   {
     period: "2023 - En curso",
     titulo: "Licenciatura en Tecnología Multimedial",
@@ -171,8 +180,16 @@ export const EDUCACION: EducacionItem[] = [
     detalle:
       "UX/UI, diseño gráfico, producción audiovisual y programación (Programación I a IV).",
     enCurso: true,
-  }
+    logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/maimonides.png */,
+  },
 ];
+
+/* Espacio reservado para cursos, carreras o posgrados futuros. */
+export const PROXIMA_FORMACION = {
+  titulo: "Próxima formación",
+  detalle: "Cursos, especializaciones o posgrados que vengan.",
+  logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/maimonides.png */,
+};
 
 // --- CONTRATAPA · CONTACTO ---
 export const CONTACTO: ContactoLink[] = [

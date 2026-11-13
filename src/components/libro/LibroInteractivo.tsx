@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import HTMLFlipBook from "react-pageflip";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Code2, Download, GraduationCap } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Code2, GraduationCap } from "lucide-react";
 import { Figurita } from "../Figurita";
 import ClimaWidget from "../ClimaWidget";
 import ProyectoModal from "../ProyectoModal";
+import LogoInteractivo from "../LogoInteractivo";
 import { ALBUM_DISENO, ALBUM_REDES, ALBUM_UXUI, ALBUM_VIDEO, type AlbumSection } from "../../data/albumData";
 import {
   CONTACTO,
@@ -11,10 +12,11 @@ import {
   EXPERIENCIAS,
   HOBBIES,
   PERFIL,
+  PROXIMA_FORMACION,
   SKILLS,
   type Skill,
 } from "../../data/portfolioData";
-import { FRONTEND_PROJECTS, GITHUB_USER } from "../../data/projectsData";
+import { FRONTEND_PROJECTS, GITHUB_USER, type FrontendProject } from "../../data/projectsData";
 import { obtenerProyecto } from "../../data/proyectosDetalle";
 
 /* Datos que llegan desde la API de GitHub (los pide index.astro). */
@@ -24,12 +26,20 @@ export interface RepoData {
   html_url: string;
   homepage: string | null;
   language: string | null;
-  stargazers_count: number;
   pushed_at: string;
+}
+
+/* Métricas sobre todos los repos públicos (las calcula index.astro). */
+export interface GithubResumen {
+  totalRepos: number;
+  conDeploy: number;
+  ultimoPush: string;
+  lenguajes: string[];
 }
 
 interface Props {
   repos: RepoData[];
+  github: GithubResumen | null;
 }
 
 type IrA = (pagina: number) => void;
@@ -325,7 +335,7 @@ function PaginaPerfil() {
       <span className="mt-4 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#1E2A44]/50">
         Fuera de la pantalla
       </span>
-      <div className="mt-1.5 grid min-h-0 flex-1 grid-cols-3 gap-2.5">
+      <div className="mt-1.5 grid min-h-0 flex-1 grid-cols-4 gap-2">
         {HOBBIES.map((hobby) => (
           <Figurita
             key={hobby.numero}
@@ -335,6 +345,7 @@ function PaginaPerfil() {
             descripcion={hobby.descripcion}
             stats={[hobby.stat]}
             imagen={hobby.imagen}
+            formaFija
           />
         ))}
       </div>
@@ -376,27 +387,39 @@ function PaginaExperiencia() {
   );
 }
 
+/* Logo de una institución: si no hay imagen, un birrete. */
+function LogoInstitucion({ logo, destacado = false }: { logo?: string; destacado?: boolean }) {
+  return (
+    <span
+      className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl ${
+        destacado ? "bg-[#FF704A] text-[#1E2A44]" : "bg-[#F2EFE7] text-[#FF704A]"
+      }`}
+    >
+      {logo ? (
+        <img src={logo} alt="" className="h-full w-full object-contain p-1.5" />
+      ) : (
+        <GraduationCap size={20} strokeWidth={1.6} />
+      )}
+    </span>
+  );
+}
+
 function PaginaEducacion() {
   return (
     <Hoja lado="der" folio="04">
       <Encabezado eyebrow="04 · Formación" titulo="Educación" bajada="Dónde aprendí lo que aplico en cada proyecto." />
 
-      <ol className="mt-5 flex min-h-0 flex-1 flex-col gap-3">
+      {/* Línea de tiempo: secundario → universidad → lo que viene */}
+      <ol className="relative mt-5 flex min-h-0 flex-1 flex-col gap-3">
         {EDUCACION.map((item) => (
           <li
             key={item.titulo + item.institucion}
             className={`flex gap-3 rounded-2xl p-3.5 ${item.enCurso ? "bg-[#1E2A44] text-[#F2EFE7]" : "bg-white"}`}
           >
-            <span
-              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                item.enCurso ? "bg-[#FF704A] text-[#1E2A44]" : "bg-[#F2EFE7] text-[#FF704A]"
-              }`}
-            >
-              <GraduationCap size={20} strokeWidth={1.6} />
-            </span>
+            <LogoInstitucion logo={item.logo} destacado={item.enCurso} />
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline justify-between gap-2">
-                <h3 className="truncate font-display text-[16px] font-black uppercase leading-tight tracking-tight">
+                <h3 className="line-clamp-2 font-display text-[16px] font-black uppercase leading-tight tracking-tight">
                   {item.titulo}
                 </h3>
                 {item.period && (
@@ -405,17 +428,35 @@ function PaginaEducacion() {
                   </span>
                 )}
               </div>
-              <p className={`font-mono text-[9px] uppercase tracking-[0.12em] ${item.enCurso ? "text-[#F2EFE7]/65" : "text-[#1E2A44]/55"}`}>
+              <p className={`font-mono text-[9px] uppercase tracking-[0.12em] ${item.enCurso ? "text-[#F2EFE7]/70" : "text-[#1E2A44]/60"}`}>
                 {item.institucion}
               </p>
               {item.detalle && (
-                <p className={`mt-1 line-clamp-2 text-[11px] font-light leading-snug ${item.enCurso ? "text-[#F2EFE7]/80" : "text-[#1E2A44]/75"}`}>
+                <p className={`mt-1 line-clamp-2 text-[11px] leading-snug ${item.enCurso ? "text-[#F2EFE7]/85" : "text-[#1E2A44]/75"}`}>
                   {item.detalle}
                 </p>
               )}
             </div>
           </li>
         ))}
+
+        {/* Figurita vacía para cursos, carreras o posgrados futuros */}
+        <li className="flex items-center gap-3 rounded-2xl border-2 border-dashed border-[#1E2A44]/25 p-3.5">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-[#1E2A44]/25 text-[#1E2A44]/35">
+            {PROXIMA_FORMACION.logo ? (
+              <img src={PROXIMA_FORMACION.logo} alt="Universidad Maimónides" className="h-full w-full object-contain p-1.5 opacity-60" />
+            ) : (
+              <Cruz className="h-5 w-5" />
+            )}
+          </span>
+          <div className="min-w-0">
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#FF704A]">Próximamente</span>
+            <h3 className="font-display text-[16px] font-black uppercase leading-tight tracking-tight text-[#1E2A44]/55">
+              {PROXIMA_FORMACION.titulo}
+            </h3>
+            <p className="text-[11px] leading-snug text-[#1E2A44]/55">{PROXIMA_FORMACION.detalle}</p>
+          </div>
+        </li>
       </ol>
     </Hoja>
   );
@@ -434,7 +475,7 @@ function PaginaIntro({ seccion, folio }: { seccion: AlbumSection; folio: string 
         <span className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#FF704A]">
           <Cruz className="h-2.5 w-2.5" /> Sección {seccion.indice}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#1E2A44]/50">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#1E2A44]/55">
           {cantidad} {cantidad === 1 ? "figurita" : "figuritas"}
         </span>
       </div>
@@ -450,37 +491,53 @@ function PaginaIntro({ seccion, folio }: { seccion: AlbumSection; folio: string 
 
       <p className="mt-3 max-w-[38ch] shrink-0 text-[14px] font-light leading-snug text-[#1E2A44]/70">{seccion.bajada}</p>
 
-      {/* portada de la sección, pegada como una figurita */}
-      <div className="relative mt-4 min-h-0 flex-1">
+      {/* Portada más chica: deja lugar para el índice de la sección */}
+      <div className="relative mt-4 h-[200px] shrink-0">
         <div className="absolute inset-0 flex items-center justify-center">
           <img
             src={seccion.portada}
             alt={`Portada de ${seccion.titulo}`}
-            className="block h-auto max-h-full w-auto max-w-full -rotate-2 rounded-xl border-[6px] border-white object-contain shadow-[0_14px_30px_rgba(30,42,68,0.22)]"
+            className="block h-auto max-h-full w-auto max-w-full -rotate-2 rounded-xl border-[5px] border-white object-contain shadow-[0_12px_26px_rgba(30,42,68,0.2)]"
           />
         </div>
       </div>
 
-      <ul className="mt-4 flex shrink-0 flex-col border-t border-[#1E2A44]/15">
+      <ul className="mt-5 flex shrink-0 flex-col border-t border-[#1E2A44]/15">
         {seccion.enfoques.map((enfoque) => (
           <li
             key={enfoque}
-            className="flex items-center gap-3 border-b border-[#1E2A44]/15 py-2 font-display text-[13px] font-bold uppercase tracking-tight"
+            className="flex items-center gap-3 border-b border-[#1E2A44]/15 py-1.5 font-display text-[13px] font-bold uppercase tracking-tight"
           >
             <Cruz className="h-3 w-3 shrink-0 text-[#FF704A]" />
             {enfoque}
           </li>
         ))}
       </ul>
+
+      {/* Qué figuritas trae la sección */}
+      <div className="mt-auto pt-4">
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#1E2A44]/50">En esta sección</span>
+        <ul className="mt-1.5 flex flex-wrap gap-1.5">
+          {seccion.figures.map((figura) => (
+            <li
+              key={figura.numero}
+              className="flex items-center gap-1.5 rounded-full border border-[#1E2A44]/15 bg-white px-2.5 py-1 text-[11px] font-medium"
+            >
+              <span className="font-mono text-[9px] font-bold text-[#FF704A]">#{figura.numero}</span>
+              {figura.titulo}
+            </li>
+          ))}
+        </ul>
+      </div>
     </Hoja>
   );
 }
 
 function SlotVacio() {
   return (
-    <div className="flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#1E2A44]/20">
-      <Cruz className="h-8 w-8 text-[#1E2A44]/20" />
-      <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#1E2A44]/35">Próximamente</span>
+    <div className="flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#1E2A44]/25">
+      <Cruz className="h-8 w-8 text-[#1E2A44]/25" />
+      <span className="font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-[#1E2A44]/45">Próximamente</span>
     </div>
   );
 }
@@ -495,10 +552,10 @@ function PaginaFiguritas({
   abrirProyecto: AbrirProyecto;
 }) {
   const figuras = seccion.figures;
-  // 1 figurita: centrada · 2: una fila · 3 o más: grilla de 2 x 2
-  const columnas = figuras.length === 1 ? 1 : 2;
-  const celdas = figuras.length <= 2 ? figuras.length : 4;
-  const vacios = Math.max(0, celdas - figuras.length);
+  // Siempre una grilla de 2 columnas (2 x 2, o 2 x 3 si hay más de 4):
+  // los lugares libres quedan como figuritas "Próximamente".
+  const celdas = figuras.length <= 4 ? 4 : 6;
+  const vacios = celdas - Math.min(figuras.length, celdas);
 
   return (
     <Hoja lado="der" folio={folio}>
@@ -509,13 +566,10 @@ function PaginaFiguritas({
       />
 
       <div
-        className={`mt-5 grid min-h-0 flex-1 gap-3 ${figuras.length === 1 ? "mx-auto w-[78%]" : "w-full"}`}
-        style={{
-          gridTemplateColumns: `repeat(${columnas}, minmax(0, 1fr))`,
-          gridTemplateRows: `repeat(${Math.ceil(celdas / columnas)}, minmax(0, 1fr))`,
-        }}
+        className="mt-5 grid min-h-0 w-full flex-1 grid-cols-2 gap-3"
+        style={{ gridTemplateRows: `repeat(${celdas / 2}, minmax(0, 1fr))` }}
       >
-        {figuras.map((figura) => (
+        {figuras.slice(0, celdas).map((figura) => (
           <Figurita key={figura.numero} compacta {...figura} onVerProyecto={abrirProyecto} />
         ))}
         {Array.from({ length: vacios }, (_, i) => (
@@ -532,9 +586,9 @@ function PaginaFiguritas({
 
 const PRINCIPIOS = ["Componentes reutilizables", "Performance y carga liviana", "Accesibilidad desde el boceto"];
 
-function PaginaFrontendIntro({ repos }: { repos: RepoData[] }) {
-  const estrellas = repos.reduce((suma, repo) => suma + repo.stargazers_count, 0);
-  const ultimoPush = repos.map((repo) => repo.pushed_at).sort().at(-1);
+function PaginaFrontendIntro({ github }: { github: GithubResumen | null }) {
+  // HTML siempre aparece: es la base de todos los proyectos web.
+  const lenguajes = github ? ["HTML", ...github.lenguajes.filter((l) => l !== "HTML")].slice(0, 6) : [];
 
   return (
     <Hoja lado="izq" folio="13">
@@ -572,26 +626,38 @@ function PaginaFrontendIntro({ repos }: { repos: RepoData[] }) {
         ))}
       </ul>
 
-      {/* Datos en vivo de la API de GitHub */}
+      {/* Datos de la API de GitHub (todos los repos públicos, sin forks) */}
       <div className="mt-auto rounded-2xl bg-[#1E2A44] p-4 text-[#F2EFE7]">
         <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#FF704A]">
           + Desde la API de GitHub
         </span>
-        {repos.length > 0 ? (
-          <dl className="mt-3 grid grid-cols-3 gap-2">
-            {[
-              { label: "Repos", valor: String(repos.length).padStart(2, "0") },
-              { label: "Estrellas", valor: String(estrellas) },
-              { label: "Último push", valor: ultimoPush ? formatearFecha(ultimoPush) : "—" },
-            ].map((dato) => (
-              <div key={dato.label}>
-                <dt className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#F2EFE7]/55">{dato.label}</dt>
-                <dd className="font-display text-[22px] font-black leading-tight">{dato.valor}</dd>
-              </div>
-            ))}
-          </dl>
+        {github ? (
+          <>
+            <dl className="mt-3 grid grid-cols-3 gap-2">
+              {[
+                { label: "Repos públicos", valor: String(github.totalRepos).padStart(2, "0") },
+                { label: "Con deploy", valor: String(github.conDeploy).padStart(2, "0") },
+                { label: "Último push", valor: github.ultimoPush ? formatearFecha(github.ultimoPush) : "—" },
+              ].map((dato) => (
+                <div key={dato.label}>
+                  <dt className="font-mono text-[8px] uppercase tracking-[0.14em] text-[#F2EFE7]/65">{dato.label}</dt>
+                  <dd className="font-display text-[22px] font-black capitalize leading-tight">{dato.valor}</dd>
+                </div>
+              ))}
+            </dl>
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {lenguajes.map((lenguaje) => (
+                <li
+                  key={lenguaje}
+                  className="rounded-full bg-white/10 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em]"
+                >
+                  {lenguaje}
+                </li>
+              ))}
+            </ul>
+          </>
         ) : (
-          <p className="mt-2 text-[12px] font-light text-[#F2EFE7]/70">No se pudieron cargar los datos de GitHub en este build.</p>
+          <p className="mt-2 text-[12px] text-[#F2EFE7]/75">No se pudieron cargar los datos de GitHub en este build.</p>
         )}
         <a
           href={`https://github.com/${GITHUB_USER}`}
@@ -606,7 +672,37 @@ function PaginaFrontendIntro({ repos }: { repos: RepoData[] }) {
   );
 }
 
+/* Portada de un proyecto frontend: logo completo (object-contain), logo dibujado o número. */
+function PortadaFrontend({ proyecto, numero }: { proyecto: FrontendProject; numero: number }) {
+  if (proyecto.logoInteractivo) {
+    return (
+      <div className="flex w-[116px] shrink-0 items-center justify-center rounded-xl bg-[#F2EFE7]">
+        <LogoInteractivo logo={proyecto.logoInteractivo} tamano={52} />
+      </div>
+    );
+  }
+  if (proyecto.cover) {
+    return (
+      <div
+        className={`flex w-[116px] shrink-0 items-center justify-center rounded-xl p-3 ${
+          proyecto.fondoOscuro ? "bg-[#0A1128]" : "bg-[#F2EFE7]"
+        }`}
+      >
+        <img src={proyecto.cover} alt={`Logo de ${proyecto.title}`} className="max-h-full max-w-full object-contain" />
+      </div>
+    );
+  }
+  return (
+    <div className="flex w-[116px] shrink-0 items-center justify-center rounded-xl bg-[#1E2A44]">
+      <span className="font-display text-[30px] font-black text-[#FF704A]">{String(numero).padStart(2, "0")}</span>
+    </div>
+  );
+}
+
 function PaginaFrontendProyectos({ repos, abrirProyecto }: { repos: RepoData[]; abrirProyecto: AbrirProyecto }) {
+  // Se reservan 5 lugares: los que sobran quedan como "Próximamente".
+  const vacios = Math.max(0, 5 - FRONTEND_PROJECTS.length);
+
   return (
     <Hoja lado="der" folio="14">
       <Encabezado eyebrow="14 · Frontend" titulo="Proyectos" />
@@ -620,27 +716,23 @@ function PaginaFrontendProyectos({ repos, abrirProyecto }: { repos: RepoData[]; 
 
           return (
             <li key={proyecto.slug} className="flex min-h-0 flex-1 gap-3 rounded-2xl bg-white p-2">
-              {/* Portada gráfica: si no hay imagen, portada tipográfica */}
-              <div className="flex w-[92px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#1E2A44]">
-                {proyecto.cover ? (
-                  <img src={proyecto.cover} alt={`Portada de ${proyecto.title}`} className="h-full w-full object-cover" />
-                ) : (
-                  <span className="font-display text-[30px] font-black text-[#FF704A]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                )}
-              </div>
+              <PortadaFrontend proyecto={proyecto} numero={i + 1} />
 
               <div className="flex min-w-0 flex-1 flex-col justify-center">
-                <div className="flex items-baseline justify-between gap-2">
-                  <h3 className="truncate font-display text-[15px] font-black uppercase leading-tight tracking-tight">
-                    {proyecto.title}
-                  </h3>
-                  <span className="shrink-0 font-mono text-[8px] uppercase tracking-[0.14em] text-[#1E2A44]/45">
-                    {repo?.language ?? proyecto.technologies[0]}
-                  </span>
-                </div>
-                <p className="line-clamp-2 text-[10px] font-light leading-snug text-[#1E2A44]/70">{resumen}</p>
+                <h3 className="truncate font-display text-[15px] font-black uppercase leading-tight tracking-tight">
+                  {proyecto.title}
+                </h3>
+                <p className="line-clamp-2 text-[10px] leading-snug text-[#1E2A44]/75">{resumen}</p>
+                <ul className="mt-1 flex gap-1 overflow-hidden">
+                  {proyecto.technologies.slice(0, 3).map((tec) => (
+                    <li
+                      key={tec}
+                      className="shrink-0 rounded-full bg-[#F2EFE7] px-1.5 py-0.5 font-mono text-[7px] font-bold uppercase tracking-[0.1em] text-[#1E2A44]/70"
+                    >
+                      {tec}
+                    </li>
+                  ))}
+                </ul>
 
                 <div className="mt-1 flex items-center gap-3 font-mono text-[9px] font-bold uppercase tracking-[0.14em]">
                   {vercel && (
@@ -657,7 +749,7 @@ function PaginaFrontendProyectos({ repos, abrirProyecto }: { repos: RepoData[]; 
                     href={repo?.html_url ?? proyecto.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-0.5 text-[#1E2A44]/60 hover:text-[#FF704A]"
+                    className="inline-flex items-center gap-0.5 text-[#1E2A44]/65 hover:text-[#FF704A]"
                   >
                     Código <ArrowUpRight size={11} />
                   </a>
@@ -673,6 +765,11 @@ function PaginaFrontendProyectos({ repos, abrirProyecto }: { repos: RepoData[]; 
             </li>
           );
         })}
+        {Array.from({ length: vacios }, (_, i) => (
+          <li key={i} className="min-h-0 flex-1">
+            <SlotVacio />
+          </li>
+        ))}
       </ol>
     </Hoja>
   );
@@ -774,7 +871,7 @@ function etiquetaPagina(pagina: number, total: number) {
   return `${String(izquierda).padStart(2, "0")} – ${String(izquierda + 1).padStart(2, "0")}`;
 }
 
-export default function LibroInteractivo({ repos }: Props) {
+export default function LibroInteractivo({ repos, github }: Props) {
   const libro = useRef<FlipBookRef | null>(null);
   const [pagina, setPagina] = useState(0);
   const [slugAbierto, setSlugAbierto] = useState<string | null>(null);
@@ -895,7 +992,7 @@ export default function LibroInteractivo({ repos }: Props) {
               </div>
 
               <div className="pagina">
-                <PaginaFrontendIntro repos={repos} />
+                <PaginaFrontendIntro github={github} />
               </div>
               <div className="pagina">
                 <PaginaFrontendProyectos repos={repos} abrirProyecto={setSlugAbierto} />

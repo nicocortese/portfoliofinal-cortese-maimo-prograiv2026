@@ -1,18 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import LibroInteractivo, { type RepoData } from "../components/libro/LibroInteractivo.tsx";
+import LibroInteractivo, { type GithubResumen, type RepoData } from "../components/libro/LibroInteractivo.tsx";
 import { FRONTEND_PROJECTS, GITHUB_USER } from "../data/projectsData";
 
 /*
- * Repositorios desde la API de GitHub (se piden al generar el sitio).
- * El campo "homepage" de cada repo es el link de Vercel que muestra el álbum.
+ * Datos de la API de GitHub (se piden al generar el sitio).
+ * - repos: los de los proyectos frontend. Su "homepage" es el link de Vercel.
+ * - resumen: métricas sobre TODOS los repos públicos para el recuadro azul.
  * El clima, en cambio, se pide en vivo desde el navegador (ClimaWidget).
  */
-async function fetchRepos(): Promise<RepoData[]> {
+async function fetchGithub(): Promise<{ repos: RepoData[]; resumen: GithubResumen | null }> {
   try {
     const token = import.meta.env.GITHUB_TOKEN;
     const respuesta = await fetch(
-      `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`,
+      `https://api.github.com/users/${GITHUB_USER}/repos?sort=pushed&per_page=100&type=owner`,
       {
         headers: {
           Accept: "application/vnd.github+json",
@@ -21,32 +22,51 @@ async function fetchRepos(): Promise<RepoData[]> {
         },
       },
     );
-    if (!respuesta.ok) return [];
+    if (!respuesta.ok) return { repos: [], resumen: null };
 
-    const data = (await respuesta.json()) as RepoData[];
+    const todos = (await respuesta.json()) as (RepoData & { fork: boolean })[];
+    const propios = todos.filter((repo) => !repo.fork);
+
+    // Cuántos repos usa cada lenguaje, de mayor a menor.
+    const conteo: Record<string, number> = {};
+    for (const repo of propios) {
+      if (repo.language) conteo[repo.language] = (conteo[repo.language] ?? 0) + 1;
+    }
+    const lenguajes = Object.entries(conteo)
+      .sort((a, b) => b[1] - a[1])
+      .map(([lenguaje]) => lenguaje);
+
     const nombres = FRONTEND_PROJECTS.map((proyecto) => proyecto.repo);
 
-    return data
-      .filter((repo) => nombres.includes(repo.name))
-      .map((repo) => ({
-        name: repo.name,
-        description: repo.description,
-        html_url: repo.html_url,
-        homepage: repo.homepage,
-        language: repo.language,
-        stargazers_count: repo.stargazers_count,
-        pushed_at: repo.pushed_at,
-      }));
+    return {
+      repos: propios
+        .filter((repo) => nombres.includes(repo.name))
+        .map((repo) => ({
+          name: repo.name,
+          description: repo.description,
+          html_url: repo.html_url,
+          homepage: repo.homepage,
+          language: repo.language,
+          pushed_at: repo.pushed_at,
+        })),
+      resumen: {
+        totalRepos: propios.length,
+        // Repos con un sitio publicado (Vercel u otro) en el campo "homepage".
+        conDeploy: propios.filter((repo) => repo.homepage).length,
+        ultimoPush: propios[0]?.pushed_at ?? "",
+        lenguajes,
+      },
+    };
   } catch {
-    return [];
+    return { repos: [], resumen: null };
   }
 }
 
-const repos = await fetchRepos();
+const { repos, resumen } = await fetchGithub();
 ---
 
 <Layout title="Álbum 2026 | Nicolás Cortese">
   <main class="h-screen w-screen overflow-hidden bg-night">
-    <LibroInteractivo client:only="react" repos={repos} />
+    <LibroInteractivo client:only="react" repos={repos} github={resumen} />
   </main>
 </Layout>

@@ -1,4 +1,4 @@
-import { FRONTEND_PROJECTS } from "./projectsData";
+import { FRONTEND_PROJECTS, type FrontendProject } from "./projectsData";
 
 /* ------------------------------------------------------------------ */
 /* DETALLE DE PROYECTOS PARA EL MODAL                                  */
@@ -35,6 +35,8 @@ export interface ProyectoDetalle {
   links?: ProyectoLink[];
   /** Perfiles de redes sociales del proyecto o del cliente. */
   redes?: ProyectoLink[];
+  /** Logo dibujado con código (se muestra si la galería está vacía). */
+  logoInteractivo?: FrontendProject["logoInteractivo"];
 }
 
 /* Arma la galería de un hotel a partir de los nombres de archivo. */
@@ -400,6 +402,7 @@ const PROYECTOS_FRONTEND: ProyectoDetalle[] = FRONTEND_PROJECTS.map((p) => ({
   ],
   technologies: p.technologies,
   gallery: p.cover ? [{ src: p.cover, caption: p.title }] : [],
+  logoInteractivo: p.logoInteractivo,
   highlights: p.highlights,
   links: [
     ...(p.vercelUrl ? [{ label: "Ver en Vercel", href: p.vercelUrl }] : []),
