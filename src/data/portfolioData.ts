@@ -37,7 +37,7 @@ export interface ContactoLink {
 // --- PÁGINA 02 · PERFIL ---
 export const PERFIL = {
   nombre: "Nicolás Cortese",
-  rol: "Diseñador Multimedial · Frontend",
+  rol: "Diseñador Multimedia",
   ubicacion: "Buenos Aires, AR",
   foto: "/assets/fotoPerfil.jpg",
   bio: [
@@ -55,20 +55,18 @@ export interface Skill {
 
 export const SKILLS: { diseno: Skill[]; codigo: Skill[] } = {
   diseno: [
-    { nombre: "Figma", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/figma.svg */ },
-    { nombre: "Photoshop", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/photoshop.svg */ },
-    { nombre: "Illustrator", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/illustrator.svg */ },
-    { nombre: "Premiere Pro", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/premiere.svg */ },
-    { nombre: "After Effects", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/aftereffects.svg */ },
-    { nombre: "Firefly", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/firefly.svg */ },
+    { nombre: "Figma", logo: "/assets/logos/figma.svg" },
+    { nombre: "Photoshop", logo: "/assets/logos/photoshop.svg" },
+    { nombre: "Illustrator", logo: "/assets/logos/illustrator.svg"},
+    { nombre: "Premiere Pro", logo: "/assets/logos/premiere.svg"  },
+    { nombre: "After Effects", logo: "/assets/logos/aftereffects.svg" },
   ],
   codigo: [
-    { nombre: "Astro", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/astro.svg */ },
-    { nombre: "React", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/react.svg */ },
-    { nombre: "TypeScript", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/typescript.svg */ },
-    { nombre: "Next.js", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/nextjs.svg */ },
-    { nombre: "Tailwind", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/tailwind.svg */ },
-    { nombre: "Git", logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/git.svg */ },
+    { nombre: "Astro", logo: "/assets/logos/astro.svg" },
+    { nombre: "React", logo: "/assets/logos/react.svg" },
+    { nombre: "TypeScript", logo: "/assets/logos/typescript.svg" }, 
+    { nombre: "Tailwind", logo: "/assets/logos/tailwind.svg" },
+    { nombre: "Git", logo: "/assets/logos/git.svg" },
   ],
 };
 
@@ -76,24 +74,32 @@ export const SKILLS: { diseno: Skill[]; codigo: Skill[] } = {
 export const HOBBIES: Hobby[] = [
   {
     numero: "08",
-    titulo: "Fútbol & Mate",
-    descripcion: "Jugar al fútbol para desconectar y tener siempre el mate al lado.",
-    stat: { label: "Ritual", value: "Diario" },
-    imagen: "" /* RUTA_IMAGEN_AQUI: /assets/hobbies/futbol.jpg */,
+    titulo: "Fútbol",
+    descripcion: "Jugar al fútbol para desconectar.",
+    stat: { label: "Ritual", value: "100" },
+    imagen: "/assets/hobbies/futbol.jpg",
   },
   {
     numero: "09",
+    titulo: "Fútbol",
+    descripcion: "Tener siempre el mate al lado.",
+    stat: { label: "Ritual", value: "Diario" },
+    imagen: "/assets/hobbies/mate.jpg",
+  },
+  
+  {
+    numero: "10",
     titulo: "Música",
     descripcion: "Me acompaña todo el día, tanto trabajando como viajando.",
     stat: { label: "Vibe", value: "95" },
     imagen: "" /* RUTA_IMAGEN_AQUI: /assets/hobbies/musica.jpg */,
   },
   {
-    numero: "10",
+    numero: "11",
     titulo: "Viajes",
-    descripcion: "Recorrer el norte y volver con la cámara llena de paisajes.",
-    stat: { label: "Destino", value: "Salta" },
-    imagen: "" /* RUTA_IMAGEN_AQUI: /assets/hobbies/viajes.jpg */,
+    descripcion: "Recorrer y volver con la cámara llena de paisajes.",
+    stat: { label: "Destino", value: "98" },
+    imagen: "/assets/hobbies/viajar.jpg",
   },
 ];
 
@@ -159,31 +165,13 @@ export const EXPERIENCIAS: ExperienciaItem[] = [
 /* VERIFICAR: completá títulos y años exactos. */
 export const EDUCACION: EducacionItem[] = [
   {
-    period: "En curso",
-    titulo: "Diseño Multimedial",
+    period: "2023 - En curso",
+    titulo: "Licenciatura en Tecnología Multimedial",
     institucion: "Universidad Maimónides",
     detalle:
-      "UX/UI, diseño gráfico, producción audiovisual y programación frontend (Programación I a IV).",
+      "UX/UI, diseño gráfico, producción audiovisual y programación (Programación I a IV).",
     enCurso: true,
-  },
-  {
-    period: "2026",
-    titulo: "Programación IV",
-    institucion: "Universidad Maimónides",
-    detalle: "Astro, React, consumo de APIs y deploy en Vercel. Este álbum es el trabajo final.",
-  },
-  {
-    period: "2025",
-    titulo: "Programación III",
-    institucion: "Universidad Maimónides",
-    detalle: "Next.js, Node.js y MongoDB: frontend y backend de aplicaciones completas.",
-  },
-  {
-    period: "" /* COMPLETAR_AÑO */,
-    titulo: "Bachiller" /* COMPLETAR_TÍTULO */,
-    institucion: "Colegio secundario" /* COMPLETAR_INSTITUCIÓN */,
-    detalle: "" /* COMPLETAR_DETALLE (opcional) */,
-  },
+  }
 ];
 
 // --- CONTRATAPA · CONTACTO ---
@@ -205,5 +193,3 @@ export const CONTACTO: ContactoLink[] = [
   },
 ];
 
-/* Dejá vacío para ocultar el botón hasta tener el PDF. */
-export const CV_URL = "" /* RUTA_CV_AQUI: /cv-nicolas-cortese.pdf */;

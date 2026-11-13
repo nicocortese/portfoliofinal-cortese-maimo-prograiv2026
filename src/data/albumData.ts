@@ -40,7 +40,7 @@ export const ALBUM_UXUI: AlbumSection = {
   portada: "/assets/uxui.jpg",
   figures: [
     {
-      numero: "11",
+      numero: "12",
       titulo: "MyMusicDesk",
       slug: "mymusicdesk",
       descripcion:
@@ -54,7 +54,7 @@ export const ALBUM_UXUI: AlbumSection = {
       ],
     },
     {
-      numero: "12",
+      numero: "13",
       titulo: "Tótem Universitario",
       slug: "totem-universitario",
       descripcion:
@@ -68,7 +68,7 @@ export const ALBUM_UXUI: AlbumSection = {
       ],
     },
     {
-      numero: "13",
+      numero: "14",
       titulo: "Olympichub",
       slug: "olympichub",
       descripcion:
@@ -93,7 +93,7 @@ export const ALBUM_DISENO: AlbumSection = {
   portada: "/assets/disenografico.jpg",
   figures: [
     {
-      numero: "14",
+      numero: "15",
       titulo: "UmaiVerse",
       slug: "umaiverse",
       descripcion:
@@ -119,7 +119,7 @@ export const ALBUM_VIDEO: AlbumSection = {
   portada: "/assets/ediciondevideos.jpg",
   figures: [
     {
-      numero: "15",
+      numero: "16",
       titulo: "Videoclip",
       slug: "videoclip",
       descripcion:
@@ -133,7 +133,7 @@ export const ALBUM_VIDEO: AlbumSection = {
       ],
     },
     {
-      numero: "16",
+      numero: "17",
       titulo: "Spot Publicitario",
       slug: "spot-publicitario",
       descripcion:
@@ -146,12 +146,12 @@ export const ALBUM_VIDEO: AlbumSection = {
       ],
     },
     {
-      numero: "17",
+      numero: "18",
       titulo: "Reels & Verticales",
       slug: "reels",
       descripcion:
         "Videos cortos para redes pensados para retener desde el primer segundo: cortes rítmicos, dinamismo visual y diseño sonoro.",
-      imagen: "" /* RUTA_IMAGEN_AQUI: /assets/portada-reels.jpg */,
+      imagen: "/assets/portada-reels.png",
       stats: [
         { label: "Formato", value: "9:16" },
         { label: "Piezas", value: "05" },
@@ -171,7 +171,7 @@ export const ALBUM_REDES: AlbumSection = {
   portada: "/assets/redessociales.jpg",
   figures: [
     {
-      numero: "18",
+      numero: "19",
       titulo: "Paseo Güemes Hotel",
       slug: "paseo-guemes",
       descripcion:
@@ -185,7 +185,7 @@ export const ALBUM_REDES: AlbumSection = {
       ],
     },
     {
-      numero: "19",
+      numero: "20",
       titulo: "Hotel Real Cafayate",
       slug: "real-cafayate",
       descripcion:

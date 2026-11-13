@@ -92,7 +92,6 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-[#1E2A44]">
               {!actual && (
                 <div className="flex h-full items-center justify-center p-6 text-center font-display text-xl font-bold uppercase text-[#F2EFE7]/70">
-                  {/* RUTA_IMAGEN_AQUI: agregá una portada en projectsData */}
                   Portada pendiente
                 </div>
               )}

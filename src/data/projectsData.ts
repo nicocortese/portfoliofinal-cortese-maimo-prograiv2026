@@ -23,7 +23,7 @@ export interface FrontendProject {
 
 export const GITHUB_USER = "nicocortese";
 
-export const FRONTEND_PROJECTS: FrontendProject[] = [
+export const FRONTEND_PROJECTS = [
   {
     slug: "fixea-web",
     repo: "fixea-web",
@@ -37,8 +37,8 @@ export const FRONTEND_PROJECTS: FrontendProject[] = [
     ],
     technologies: ["Next.js", "React", "Tailwind CSS", "Chrome API", "Node.js"],
     date: "2026",
-    cover: "" /* RUTA_IMAGEN_AQUI: /assets/frontend/fixea.jpg */,
-    vercelUrl: "https://fixea.vercel.app",
+    cover: "/assets/logos/fixea.png",
+    vercelUrl: "https://fixea-web.vercel.app",
     githubUrl: "https://github.com/nicocortese/fixea-web",
     highlights: [
       { title: "Extensión Chrome", detail: "Sincronización bidireccional en tiempo real." },
@@ -46,80 +46,63 @@ export const FRONTEND_PROJECTS: FrontendProject[] = [
     ],
   },
   {
+    slug: "dashboard-extension-umai",
+    repo: "dashboard-extension-umai",
+    title: "Gestioná",
+    subtitle: "Panel interactivo de métricas de Universidad Maimónides",
+    summary:
+      "Aplicación web para la visualización analítica de actividades de extensión mediante gráficos interactivos y datos en tiempo real.",
+    description: [
+      "Desarrollo de un panel interactivo para la gestión y visualización de datos de actividades de extensión de la universidad.",
+      "Integración en tiempo real con Google Sheets API y renderizado de métricas dinámicas mediante la librería Recharts.",
+    ],
+    technologies: ["React", "Vite", "Recharts", "Google Sheets API"],
+    date: "2026",
+    cover: `<div class="w-full h-full flex items-center justify-center bg-[#F2EFE7]"><div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap text-white" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg></div></div>`,
+    vercelUrl: "https://gestiona-umai.vercel.app/",
+    githubUrl: "https://github.com/nicocortese/proyecto1-cortese-maimo-prograiv2026",
+    highlights: [
+      { title: "Datos en tiempo real", detail: "Sincronización directa y visualización dinámica conectada a hojas de cálculo." }
+    ],
+  },
+ { 
     slug: "retro-kicks",
     repo: "retro-kicks-frontend",
     title: "Retro Kicks",
     subtitle: "E-commerce de zapatillas retro y cultura vintage",
     summary:
-      "E-commerce con catálogo interactivo, carrito dinámico y checkout integrado, con estética de los '80 y '90.",
+      "E-commerce con catálogo interactivo, carrito dinámico y checkout integrado, con estética de los 2000s.",
     description: [
-      "Desarrollo e-commerce enfocado en la estética retro de los '80/'90 adaptada a una experiencia web moderna.",
+      "Desarrollo e-commerce enfocado en la estética retro de los 2000s adaptada a una experiencia web moderna.",
       "Modelado de datos en MongoDB, API REST con Express y frontend responsivo de alto rendimiento.",
     ],
     technologies: ["React", "Next.js", "Tailwind CSS", "Node.js", "MongoDB"],
-    date: "2025 – 2026",
-    cover: "" /* RUTA_IMAGEN_AQUI: /assets/frontend/retro-kicks.jpg */,
-    vercelUrl: "" /* URL_VERCEL_AQUI */,
+    date: "2025",
+    cover: "/assets/logos/retrokicks.png",
+    vercelUrl: "https://retro-kicks.vercel.app/",
     githubUrl: "https://github.com/nicocortese/retro-kicks-frontend",
     highlights: [
       { title: "Carrito propio", detail: "Estado persistente con almacenamiento local." },
     ],
   },
   {
-    slug: "progra3-tp-final",
-    repo: "maimo-progra3-2025-tpfinalfrontend-cortese",
-    title: "TP Final · Progra III",
-    subtitle: "Trabajo final de Programación III — Universidad Maimónides",
-    summary:
-      "Frontend del trabajo final de Programación III: consumo de API propia, rutas dinámicas y componentes reutilizables.",
-    description: [
-      "Trabajo final de la materia Programación III de la Universidad Maimónides.",
-      "Frontend conectado a una API propia, con rutas dinámicas, estados de carga y componentes reutilizables.",
-    ],
-    technologies: ["Next.js", "React", "Tailwind CSS"],
-    date: "2025",
-    cover: "" /* RUTA_IMAGEN_AQUI: /assets/frontend/progra3-final.jpg */,
-    vercelUrl: "" /* URL_VERCEL_AQUI */,
-    githubUrl: "https://github.com/nicocortese/maimo-progra3-2025-tpfinalfrontend-cortese",
-    highlights: [{ title: "API propia", detail: "Frontend y backend desarrollados de punta a punta." }],
-  },
-  {
     slug: "progra3-tp2",
     repo: "maimo-progra3-2025-tp2-cortese",
-    title: "TP2 · Progra III",
+    title: "Sitio web de películas",
     subtitle: "Trabajo práctico 2 de Programación III — Universidad Maimónides",
     summary:
       "Trabajo práctico de Programación III: maquetación con React, consumo de datos externos y deploy en Vercel.",
     description: [
       "Segundo trabajo práctico de la materia Programación III de la Universidad Maimónides.",
-      "Maquetación con componentes en React y consumo de datos desde una API externa.",
+      "Maquetación con componentes en React y consumo de datos desde una API externa de películas (TMDB).",
     ],
     technologies: ["React", "Next.js", "CSS"],
     date: "2025",
-    cover: "" /* RUTA_IMAGEN_AQUI: /assets/frontend/progra3-tp2.jpg */,
-    vercelUrl: "" /* URL_VERCEL_AQUI */,
+    cover: "/assets/logos/logotp2.svg",
+    vercelUrl: "https://maimo-progra3-2025-tp2-cortese.vercel.app/",
     githubUrl: "https://github.com/nicocortese/maimo-progra3-2025-tp2-cortese",
-    highlights: [{ title: "Consumo de API", detail: "Datos externos con estados de carga y error." }],
-  },
-  {
-    slug: "album-2026",
-    repo: "portfoliofinal-cortese-maimo-prograiv2026",
-    title: "Álbum 2026",
-    subtitle: "Este portfolio: un álbum de figuritas interactivo",
-    summary:
-      "Portfolio en Astro + React con un libro que se hojea, figuritas que se dan vuelta, clima en vivo y la API de GitHub.",
-    description: [
-      "Trabajo final de Programación IV: el portfolio convertido en un álbum de figuritas que se hojea página por página.",
-      "Astro genera la base estática y React se encarga de la interacción: el libro, las figuritas, el modal de proyectos y el clima en tiempo real.",
-    ],
-    technologies: ["Astro", "React", "TypeScript", "Tailwind CSS", "react-pageflip"],
-    date: "2026",
-    cover: "" /* RUTA_IMAGEN_AQUI: /assets/frontend/album-2026.jpg */,
-    vercelUrl: "https://cortese-portfolio-2026.vercel.app/",
-    githubUrl: "https://github.com/nicocortese/portfoliofinal-cortese-maimo-prograiv2026",
     highlights: [
-      { title: "Libro interactivo", detail: "16 páginas que se pasan con mouse, teclado o botones." },
-      { title: "Datos en vivo", detail: "Clima en tiempo real y repositorios desde la API de GitHub." },
+      { title: "Consumo de API", detail: "Datos externos con estados de carga y error." }
     ],
   },
 ];

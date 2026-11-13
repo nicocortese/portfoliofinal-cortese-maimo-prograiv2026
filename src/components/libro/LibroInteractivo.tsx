@@ -7,7 +7,6 @@ import ProyectoModal from "../ProyectoModal";
 import { ALBUM_DISENO, ALBUM_REDES, ALBUM_UXUI, ALBUM_VIDEO, type AlbumSection } from "../../data/albumData";
 import {
   CONTACTO,
-  CV_URL,
   EDUCACION,
   EXPERIENCIAS,
   HOBBIES,
@@ -176,13 +175,12 @@ function PaginaTapa() {
             </h1>
 
             <p className="mt-4 max-w-[17ch] font-display text-[22px] font-bold leading-[1.05]">
-              Diseño multimedial que también se programa.
+              Apasionado por construir lo que quieren comunicar las personas.
             </p>
 
             {/* figurita de la tapa */}
             <div className="absolute bottom-6 right-10 w-[178px] rotate-[6deg] rounded-2xl bg-[#F2EFE7] p-2 shadow-[0_18px_40px_rgba(30,42,68,0.35)]">
               <div className="flex items-center justify-between px-0.5 pb-1.5">
-                <span className="rounded-full bg-[#1E2A44] px-2 py-0.5 font-mono text-[9px] font-bold text-[#F2EFE7]">#01</span>
                 <span className="font-display text-sm leading-none text-[#FF704A]">+</span>
               </div>
               <img
@@ -210,7 +208,7 @@ function PaginaTapa() {
 
           <div className="relative flex h-14 shrink-0 items-center justify-between bg-[#1E2A44] px-11 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#F2EFE7]">
             <span>Portfolio final · Programación IV</span>
-            <span className="text-[#FF704A]">19 figuritas ↗</span>
+            <span className="text-[#FF704A]">19 figuritas</span>
           </div>
         </div>
       </Lienzo>
@@ -733,16 +731,6 @@ function PaginaContratapa() {
               </li>
             ))}
           </ul>
-
-          {CV_URL && (
-            <a
-              href={CV_URL}
-              download
-              className="mt-3 inline-flex w-fit items-center gap-2 rounded-full bg-[#1E2A44] px-5 py-2.5 font-display text-[12px] font-bold uppercase tracking-[0.1em] text-[#F2EFE7] hover:bg-[#F2EFE7] hover:text-[#1E2A44]"
-            >
-              <Download size={15} /> Descargar CV
-            </a>
-          )}
 
           <div className="mt-auto flex items-end justify-between">
             <div>
