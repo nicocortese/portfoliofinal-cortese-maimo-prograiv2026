@@ -77,7 +77,7 @@ Información obtenida: Temperatura actual, mínima y máxima, sensación térmic
 
 - Comportamiento ante error o ausencia de datos: Se ejecuta al momento de generar el sitio (index.astro) admitiendo un GITHUB_TOKEN opcional para ampliar el límite de peticiones. Ante un error de red o rate limit de la API pública, se inyectan métricas de respaldo verificadas para que la sección Frontend mantenga su integridad.
 
-7 -- **Criterios de responsive y accesibilidad:**
+7 - **Criterios de responsive y accesibilidad:**
 * Adaptación estructural por tamaño de pantalla: 
 En escritorio (>= 1024px), LibroInteractivo despliega el álbum a doble página y ProyectoModal se ajusta al alto de la ventana evitando scrolls internos. En dispositivos móviles (< 1024px), la vista pasa a página única, las grillas de proyectos y destacados se reorganizan a una columna (grid-cols-1) y el modal habilita scroll vertical fluido con contenedores multimedia de altura fija (shrink-0).
 
