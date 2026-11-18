@@ -1,7 +1,7 @@
 # Portfolio final - Nicolás Cortese - Programación IV 2026
 
-1 - **URL del portfolio publicado:**
-2 - **URL repositorio:**
+1 - **URL del portfolio publicado:** https://portfoliofinal-cortese-maimo-progra.vercel.app/
+2 - **URL repositorio:** https://github.com/nicocortese/portfoliofinal-cortese-maimo-prograiv2026
 
 3 - **Descripción de la propuesta:** Portfolio web interactivo diseñado bajo la metáfora visual y táctil de un álbum de figuritas. El portfolio interactivo presenta mi trabajo como Diseñador Multimedia y Desarrollador Frontend (UX/UI, Diseño Gráfico, Producción Audiovisual, Redes Sociales y Desarrollo Web) de una forma dinámica, lúdica y bien estructurada.
 
@@ -17,7 +17,7 @@
 ### Comandos
 
 **Clonar el repositorio e instalar dependencias:**
-   git clone (https://github.com/nicocortese/portfoliofinal-cortese-maimo-prograiv2026.git)
+   git clone https://github.com/nicocortese/portfoliofinal-cortese-maimo-prograiv2026.git
    cd portfoliofinal-cortese-maimo-prograiv2026
    npm install
 
