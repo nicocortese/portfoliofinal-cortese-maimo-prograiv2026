@@ -1,9 +1,7 @@
 import { Zap, type LucideIcon } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/* PROYECTOS FRONTEND (páginas 13 · 14)                                */
-/* Se combinan con la API de GitHub: si el repo tiene "homepage"       */
-/* (el link de Vercel), se usa ese; si no, el vercelUrl de acá.        */
+/* PROYECTOS FRONTEND:
 /* ------------------------------------------------------------------ */
 
 export interface FrontendProject {
@@ -16,11 +14,8 @@ export interface FrontendProject {
   description: string[];
   technologies: string[];
   date: string;
-  /** Portada gráfica (logo). Vacío = se usa logoInteractivo o una portada tipográfica. */
   cover: string;
-  /** true si el logo es claro y necesita fondo oscuro para verse. */
   fondoOscuro?: boolean;
-  /** Logo dibujado con código: ícono de lucide sobre un degradado. */
   logoInteractivo?: { Icono: LucideIcon; degradado: string };
   vercelUrl: string;
   githubUrl: string;
@@ -34,14 +29,14 @@ export const FRONTEND_PROJECTS: FrontendProject[] = [
     slug: "fixea-web",
     repo: "fixea-web",
     title: "Fixea",
-    subtitle: "Plataforma de automatización y seguimiento de proyectos multimedia",
+    subtitle: "Plataforma de seguimiento y feedback inmediato de proyectos de desarollo web",
     summary:
-      "Aplicación web en Next.js con extensión de Chrome para automatizar flujos de trabajo y hacer tracking en tiempo real.",
+      "Extensión de Chrome para automatizar flujos de trabajo y hacer tracking en tiempo real.",
     description: [
       "Fixea nació para resolver la fragmentación en la gestión de tareas de desarrollo y diseño multimedia.",
       "Integra un dashboard con métricas clave, autenticación segura y conexión fluida mediante una extensión de navegador nativa.",
     ],
-    technologies: ["HTML", "Next.js", "React", "Tailwind CSS", "Chrome API", "Node.js"],
+    technologies: ["HTML", "Next.js", "React", "Tailwind CSS", "MongoDB", "Node.js"],
     date: "2026",
     cover: "/assets/logos/fixea.png",
     fondoOscuro: true,
@@ -49,7 +44,7 @@ export const FRONTEND_PROJECTS: FrontendProject[] = [
     githubUrl: "https://github.com/nicocortese/fixea-web",
     highlights: [
       { title: "Extensión Chrome", detail: "Sincronización bidireccional en tiempo real." },
-      { title: "UI accesible", detail: "Interfaz ajustada a estándares WCAG 2.1 AA." },
+      { title: "UI accesible y limpia", detail: "Interfaz ajustada a estándares WCAG 2.1 AA." },
     ],
   },
   {
@@ -58,9 +53,9 @@ export const FRONTEND_PROJECTS: FrontendProject[] = [
     title: "Gestioná",
     subtitle: "Panel interactivo de métricas de Universidad Maimónides",
     summary:
-      "Aplicación web para la visualización analítica de actividades de extensión mediante gráficos interactivos y datos en tiempo real.",
+      "Visualización analítica de actividades de extensión de UMAi mediante gráficos interactivos y datos en tiempo real.",
     description: [
-      "Desarrollo de un panel interactivo para la gestión y visualización de datos de actividades de extensión de la universidad.",
+      "Desarrollo de un panel interactivo para la gestión y visualización de datos de actividades de extensión de la Universidad Maimónides.",
       "Integración en tiempo real con Google Sheets API y renderizado de métricas dinámicas mediante la librería Recharts.",
     ],
     technologies: ["HTML", "React", "Vite", "Recharts", "Google Sheets API"],
@@ -97,7 +92,7 @@ export const FRONTEND_PROJECTS: FrontendProject[] = [
     slug: "progra3-tp2",
     repo: "maimo-progra3-2025-tp2-cortese",
     title: "Sitio web de películas",
-    subtitle: "Trabajo práctico 2 de Programación III — Universidad Maimónides",
+    subtitle: "Programación III — Universidad Maimónides",
     summary:
       "Trabajo práctico de Programación III: maquetación con React, consumo de datos externos y deploy en Vercel.",
     description: [

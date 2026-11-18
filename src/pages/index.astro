@@ -6,28 +6,38 @@ import { FRONTEND_PROJECTS, GITHUB_USER } from "../data/projectsData";
 /*
  * Datos de la API de GitHub (se piden al generar el sitio).
  * - repos: los de los proyectos frontend. Su "homepage" es el link de Vercel.
- * - resumen: métricas sobre TODOS los repos públicos para el recuadro azul.
+ * - resumen: métricas sobre todos los repos del usuario para el recuadro azul.
+ * Con GITHUB_TOKEN se consulta /user/repos, que incluye repos privados;
+ * sin token se usa el endpoint público como fallback.
  * El clima, en cambio, se pide en vivo desde el navegador (ClimaWidget).
  */
 async function fetchGithub(): Promise<{ repos: RepoData[]; resumen: GithubResumen | null }> {
   try {
     const token = import.meta.env.GITHUB_TOKEN;
-    const respuesta = await fetch(
-      `https://api.github.com/users/${GITHUB_USER}/repos?sort=pushed&per_page=100&type=owner`,
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          "User-Agent": "portfolio-album-2026",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      },
-    );
-    if (!respuesta.ok) return { repos: [], resumen: null };
+    const cabeceras = {
+      Accept: "application/vnd.github+json",
+      "User-Agent": "portfolio-album-2026",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
 
-    const todos = (await respuesta.json()) as (RepoData & { fork: boolean })[];
+    const urlConToken =
+      "https://api.github.com/user/repos?per_page=100&sort=pushed&direction=desc&affiliation=owner";
+    const urlPublica = `https://api.github.com/users/${GITHUB_USER}/repos?sort=pushed&direction=desc&per_page=100&type=owner`;
+
+    const pedir = async (url: string) => {
+      const respuesta = await fetch(url, { headers: cabeceras });
+      if (!respuesta.ok) return null;
+      return (await respuesta.json()) as (RepoData & { fork: boolean; private: boolean })[];
+    };
+
+    let todos = token ? await pedir(urlConToken) : null;
+    if (!todos) todos = await pedir(urlPublica);
+    if (!todos) return { repos: [], resumen: null };
+
+
     const propios = todos.filter((repo) => !repo.fork);
+    const nombres = FRONTEND_PROJECTS.map((proyecto) => proyecto.repo);
 
-    // Cuántos repos usa cada lenguaje, de mayor a menor.
     const conteo: Record<string, number> = {};
     for (const repo of propios) {
       if (repo.language) conteo[repo.language] = (conteo[repo.language] ?? 0) + 1;
@@ -35,8 +45,6 @@ async function fetchGithub(): Promise<{ repos: RepoData[]; resumen: GithubResume
     const lenguajes = Object.entries(conteo)
       .sort((a, b) => b[1] - a[1])
       .map(([lenguaje]) => lenguaje);
-
-    const nombres = FRONTEND_PROJECTS.map((proyecto) => proyecto.repo);
 
     return {
       repos: propios
@@ -50,10 +58,9 @@ async function fetchGithub(): Promise<{ repos: RepoData[]; resumen: GithubResume
           pushed_at: repo.pushed_at,
         })),
       resumen: {
-        totalRepos: propios.length,
-        // Repos con un sitio publicado (Vercel u otro) en el campo "homepage".
-        conDeploy: propios.filter((repo) => repo.homepage).length,
-        ultimoPush: propios[0]?.pushed_at ?? "",
+        totalRepos: todos.length,
+        conDeploy: todos.filter((repo) => repo.homepage).length,
+        ultimoPush: todos[0]?.pushed_at ?? "",
         lenguajes,
       },
     };

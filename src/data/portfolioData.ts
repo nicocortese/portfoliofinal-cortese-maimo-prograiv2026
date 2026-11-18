@@ -1,6 +1,5 @@
 /* ------------------------------------------------------------------ */
-/* DATOS PERSONALES DEL ÁLBUM                                          */
-/* Perfil, experiencia, educación, hobbies y contacto.                 */
+/* DATOS PERSONALES DEL ÁLBUM:                                          */
 /* ------------------------------------------------------------------ */
 
 export interface ExperienciaItem {
@@ -17,7 +16,6 @@ export interface EducacionItem {
   institucion: string;
   detalle: string;
   enCurso?: boolean;
-  /** Logo de la institución. Vacío = ícono de birrete. */
   logo?: string;
 }
 
@@ -26,7 +24,7 @@ export interface Hobby {
   titulo: string;
   descripcion: string;
   stat: { label: string; value: string };
-  /** Dejá la ruta vacía hasta tener la foto: la figurita muestra el título. */
+  icono: "futbol" | "mate" | "musica" | "viajes";
   imagen?: string;
 }
 
@@ -36,20 +34,18 @@ export interface ContactoLink {
   href: string;
 }
 
-// --- PÁGINA 02 · PERFIL ---
+// --- PÁGINA 02  ---
 export const PERFIL = {
   nombre: "Nicolás Cortese",
   rol: "Diseñador Multimedia",
-  ubicacion: "Buenos Aires, AR",
+  ubicacion: "Argentina",
   foto: "/assets/fotoPerfil.jpg",
   bio: [
-    "Trabajo en el puente entre la identidad visual y el código: pienso la pieza desde el concepto, la diseño y la llevo al navegador con componentes reutilizables.",
-    "Diseño interfaces en Figma, construyo identidades, edito video y produzco contenido para redes. Del primer boceto al último commit.",
+    "Soy un Diseñador Multimedia apasionado por construir identidades que transmitan lo que quieren comunicar las personas. Siempre digo que mi foco es muy amplio y es algo que me gusta, desde darle dinamismo a una historia en video o crear un sistema gráfico, hasta diseñar experiencias digitales intuitivas y llevarlas al código.",
   ],
 };
 
-/* Skills: Adobe InDesign NO va en esta lista.
- * "logo": reemplazá el string vacío por la ruta de tu archivo local. */
+
 export interface Skill {
   nombre: string;
   logo: string;
@@ -73,39 +69,42 @@ export const SKILLS: { diseno: Skill[]; codigo: Skill[] } = {
   ],
 };
 
-// --- PÁGINA 02 · HOBBIES (figuritas) ---
 export const HOBBIES: Hobby[] = [
   {
     numero: "08",
     titulo: "Fútbol",
-    descripcion: "Jugar al fútbol para desconectar.",
-    stat: { label: "Ritual", value: "100" },
+    descripcion: "Desconectar a través del fútbol.",
+    stat: { label: "Vitalidad", value: "100" },
+    icono: "futbol",
     imagen: "/assets/hobbies/futbol.jpg",
   },
   {
     numero: "09",
     titulo: "Mate",
-    descripcion: "Tener siempre el mate al lado.",
-    stat: { label: "Ritual", value: "Diario" },
+    descripcion: "El mate siempre al lado.",
+    stat: { label: "Vitalidad", value: "Diaria" },
+    icono: "mate",
     imagen: "/assets/hobbies/mate.jpg",
   },
   {
     numero: "10",
     titulo: "Música",
     descripcion: "Me acompaña todo el día, tanto trabajando como viajando.",
-    stat: { label: "Vibe", value: "95" },
-    imagen: "" /* RUTA_IMAGEN_AQUI: /assets/hobbies/musica.jpg */,
+    stat: { label: "Vitalidad", value: "98" },
+    icono: "musica",
+    imagen: "/assets/hobbies/musica.jpg"
   },
   {
     numero: "11",
     titulo: "Viajes",
     descripcion: "Recorrer y volver con la cámara llena de paisajes.",
-    stat: { label: "Destino", value: "98" },
+    stat: { label: "Vitalidad", value: "90" },
+    icono: "viajes",
     imagen: "/assets/hobbies/viajar.jpg",
   },
 ];
 
-// --- PÁGINA 03 · EXPERIENCIA ---
+// --- PÁGINA 03 ---
 export const EXPERIENCIAS: ExperienciaItem[] = [
   {
     period: "2025 – 2026",
@@ -146,57 +145,60 @@ export const EXPERIENCIAS: ExperienciaItem[] = [
     location: "Salta, AR",
     achievements: [
       "Incrementé un 25,81% el alcance y la comunidad a través de un sistema visual coherente.",
-      "Desarrollo de piezas audiovisuales y estáticas semanales.",
+      "Desarrollé piezas audiovisuales y estáticas semanales.",
+      "Centralicé la planificación y los flujos de trabajo de diseño utilizando Notion y Excel."
     ],
   },
   {
-    period: "",
+    period: "2023 – 2026",
     role: "Creador de contenido",
     company: "Chacadeco",
     achievements: ["Filmación y edición de fotos y videos orgánicos y pagos."],
   },
   {
-    period: "",
+    period: "2020-2021",
     role: "Redactor",
     company: "Deportes al Taco",
     achievements: ["Redacción de información deportiva para web y redes."],
   },
 ];
 
-// --- PÁGINA 04 · EDUCACIÓN ---
-/* Orden cronológico: secundario → universidad → próximas formaciones. */
+// --- PÁGINA 04 ---
 export const EDUCACION: EducacionItem[] = [
   {
-    period: "" /* COMPLETAR_AÑOS: ej. "2017 – 2022" */,
-    titulo: "Bachiller" /* COMPLETAR_TÍTULO */,
-    institucion: "Colegio secundario" /* COMPLETAR_NOMBRE_DEL_COLEGIO */,
-    detalle: "" /* COMPLETAR_DETALLE (opcional) */,
-    logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/colegio.png */,
+    period: "2018-2022",
+    titulo: "Bachillerato en Comunicación",
+    institucion: "Colegio Nuestra Señora de Lourdes",
+    detalle: "Análisis de forma crítica los medios masivos, comprensión de los procesos sociales de interacción y producción de contenidos en distintos formatos",
+    logo: "/assets/logos/lourdes-escudo.png",
   },
   {
     period: "2023 - En curso",
     titulo: "Licenciatura en Tecnología Multimedial",
     institucion: "Universidad Maimónides",
     detalle:
-      "UX/UI, diseño gráfico, producción audiovisual y programación (Programación I a IV).",
+      "Creatividad, diseño, programación y gestión de proyectos para la creación de contenidos y servicios digitales",
     enCurso: true,
-    logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/maimonides.png */,
+    logo: "/assets/logos/umai.png",
   },
 ];
 
-/* Espacio reservado para cursos, carreras o posgrados futuros. */
-export const PROXIMA_FORMACION = {
+/* Futuros. */
+export const PROXIMA_FORMACION: { titulo: string; detalle: string; logo?: string } = {
   titulo: "Próxima formación",
-  detalle: "Cursos, especializaciones o posgrados que vengan.",
-  logo: "" /* RUTA_IMAGEN_AQUI: /assets/logos/maimonides.png */,
+  detalle: "Cursos, especializaciones o posgrados próximos."
 };
 
-// --- CONTRATAPA · CONTACTO ---
+// --- CONTRATAPA---
+const EMAIL = "nicolascortese2004@gmail.com";
+const ASUNTO = encodeURIComponent("Propuesta de trabajo · Portfolio");
+const CUERPO = encodeURIComponent("Hola Nico, te escribo porque ");
+
 export const CONTACTO: ContactoLink[] = [
   {
     label: "Email",
-    valor: "nicolascortese2004@gmail.com",
-    href: "mailto:nicolascortese2004@gmail.com",
+    valor: EMAIL,
+    href: `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}&su=${ASUNTO}&body=${CUERPO}`,
   },
   {
     label: "LinkedIn",

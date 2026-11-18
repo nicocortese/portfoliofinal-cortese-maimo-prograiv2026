@@ -1,9 +1,7 @@
 import { FRONTEND_PROJECTS, type FrontendProject } from "./projectsData";
 
 /* ------------------------------------------------------------------ */
-/* DETALLE DE PROYECTOS PARA EL MODAL                                  */
-/* La galería acepta imágenes y videos: si "tipo" es "video", el modal */
-/* muestra un <video controls> nativo para reproducir y pausar.        */
+/* DETALLE DE PROYECTOS PARA EL MODAL:
 /* ------------------------------------------------------------------ */
 
 export interface ProyectoMedia {
@@ -31,15 +29,15 @@ export interface ProyectoDetalle {
   technologies: string[];
   gallery: ProyectoMedia[];
   highlights: { title: string; detail: string }[];
-  /** Prototipos, sitios en vivo, repositorios. */
   links?: ProyectoLink[];
-  /** Perfiles de redes sociales del proyecto o del cliente. */
   redes?: ProyectoLink[];
   /** Logo dibujado con código (se muestra si la galería está vacía). */
   logoInteractivo?: FrontendProject["logoInteractivo"];
+  ajusteGaleria?: "cover" | "contain";
+  fondoGaleria?: "papel" | "oscuro";
 }
 
-/* Arma la galería de un hotel a partir de los nombres de archivo. */
+/* Galería de un hotel a partir de los nombres de archivo. */
 const piezas = (archivos: string[], caption: string): ProyectoMedia[] =>
   archivos.map((archivo, i) => ({
     src: `/assets/${archivo}`,
@@ -56,15 +54,14 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     client: "Universidad Maimónides",
     description: [
       "Diseño de interfaz y usabilidad para una rocola en la sala de estar de la Universidad Maimónides. El foco estuvo en resolver la interacción en pantalla mediante selección táctil para moverse, claridad en los estados del sistema y una sección para visibilizar artistas de la universidad.",
-      "El trabajo partió de un diagnóstico de uso y de una propuesta de valor clara. A partir de ahí construí la arquitectura de información, los flujos de navegación y un sistema visual con estados explícitos.",
     ],
     process: [
-      "Diagnóstico de uso y definición de la propuesta de valor.",
-      "Arquitectura de información y mapa de navegación táctil.",
+      "Diagnóstico de uso y definición de la problemática.",
+      "Arquitectura de la información.",
       "Sistema de diseño, tipografía y componentes de reproducción.",
-      "Prototipo navegable y validación de estados del sistema.",
+      "Prototipo navegable y validación.",
     ],
-    technologies: ["Figma", "UX Research", "Arquitectura de Información", "UI Design", "Prototipado"],
+    technologies: ["Figma", "UX", "Arquitectura de Información", "UI", "UX Research", "Prototipado"],
     gallery: [
       { src: "/assets/mymusicdesk.png", caption: "Interfaz principal" },
       { src: "/assets/diagnostico.png", caption: "Diagnóstico" },
@@ -76,8 +73,8 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
       { src: "/assets/mockup.png", caption: "Mockup en contexto" },
     ],
     highlights: [
-      { title: "Interacción táctil", detail: "Selección directa con botones de gran formato y feedback inmediato." },
-      { title: "Estados del sistema", detail: "Reproducción, pausa y selección siempre visibles." },
+      { title: "Interacción táctil", detail: "Selección directa con botones de gran tamaño." },
+      { title: "Accesibilidad", detail: "Apto para todo tipo de capacidades."},
       { title: "Artistas UMAI", detail: "Sección para visibilizar la producción musical de la universidad." },
     ],
     links: [
@@ -95,20 +92,18 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     year: "2025",
     client: "Universidad Maimónides",
     description: [
-      "Diseño de interfaz de tótem para docentes de la Universidad Maimónides. El proyecto se centró en la accesibilidad física y cognitiva del usuario mediante botones de gran formato con alto contraste, una tipografía legible en diferentes distancias y una arquitectura de navegación reducida y directa.",
-      "Los flujos de interacción están optimizados para durar entre 1 y 2 minutos por docente antes de iniciar su clase.",
+      "Diseño de interfaz de tótem para docentes de la Universidad Maimónides. El proyecto se centró en la accesibilidad física y cognitiva del usuario mediante botones de gran formato con alto contraste, una tipografía legible en diferentes distancias y una arquitectura de navegación reducida y directa, optimizada para flujos ágiles de interacción."
     ],
     process: [
-      "Morfología y accesibilidad física del tótem.",
+      "Problemática y research.",
       "Wireframes en baja fidelidad del flujo docente.",
       "MVP y validación del estado del aula.",
       "Identidad visual: paleta y sistema tipográfico.",
       "Testeo con usuario ideal.",
     ],
-    technologies: ["Figma", "Accesibilidad", "Wireframing", "Prototipado", "Testeo de usuarios"],
+    technologies: ["Figma", "UI Design", "Accesibilidad", "Prototipado", "UX", "Arquitectura de Información", "User Flow", "UX Research"],
     gallery: [
       { src: "/assets/mockuptotem.jpg", caption: "Mockup del tótem" },
-      { src: "/assets/uxui.jpg", caption: "Tótem digital para docentes" },
       { src: "/assets/morfologia.jpg", caption: "Morfología y accesibilidad" },
       { src: "/assets/wireframeenbaja.jpg", caption: "Wireframes" },
       { src: "/assets/mvp.jpg", caption: "MVP" },
@@ -130,19 +125,20 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
   {
     slug: "olympichub",
     title: "Olympichub",
-    subtitle: "App de los Juegos Olímpicos para seguir atletas y disciplinas.",
+    subtitle: "App de los Juegos Olímpicos para seguir atletas, disciplinas y eventos deportivos.",
     category: "UX/UI · App móvil",
     year: "2024",
+    client: "Universidad Maimónides",
     description: [
-      "Diseño de una aplicación de los Juegos Olímpicos centrada en facilitar la exploración de atletas y disciplinas mediante buscadores, perfiles individuales, información deportiva y un sistema de favoritos para personalizar la experiencia del usuario en vivo.",
+      "Diseño de una aplicación de los Juegos Olímpicos centrada en facilitar la exploración de atletas y disciplinas mediante buscadores, perfiles individuales, información deportiva y un sistema de favoritos para personalizar la experiencia del usuario en vivo."
     ],
     process: [
       "Identidad de la marca: misión, visión y valores.",
-      "Paleta, tipografía y usos correctos del logo.",
+      "Paleta, tipografía y usuario objetivo.",
       "Diseño de pantallas y sistema de favoritos.",
-      "Prototipo navegable en Figma.",
+      "Prototipo navegable.",
     ],
-    technologies: ["Figma", "Mobile UI", "Branding", "Prototipado"],
+    technologies: ["Figma", "Mobile UI", "UI", "UX", "UX Research", "Design Systems", "User Flow", "Prototipado"],
     gallery: [
       { src: "/assets/oly.jpg", caption: "Olympichub" },
       { src: "/assets/jjooapp.png", caption: "La app de los Juegos Olímpicos" },
@@ -154,7 +150,7 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     ],
     highlights: [
       { title: "Buscadores", detail: "Atletas y disciplinas a un toque de distancia." },
-      { title: "Favoritos", detail: "Una experiencia personalizada para seguir los juegos en vivo." },
+      { title: "Favoritos", detail: "Una experiencia personalizada para seguir los juegos en tiempo real." },
     ],
     links: [
       {
@@ -171,8 +167,7 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     year: "2026",
     client: "Universidad Maimónides",
     description: [
-      "Sistema de identidad visual completo para un canal de streaming: concepto, público objetivo, moodboard, paleta cromática, tipografía, logotipo y sus variantes, aplicado a afiches, folleto, volante y piezas para redes.",
-      "El objetivo fue que cualquier pieza se reconociera como parte del mismo universo, incluso antes de leer el nombre del canal.",
+    "Diseño integral del sistema de identidad visual para un canal de streaming universitario. Se definió la arquitectura visual completa: construcción del logotipo, selección y jerarquía tipográfica, paleta cromática de alto contraste pensada para pantallas y aplicaciones gráficas."
     ],
     process: [
       "Definición de público objetivo y concepto de marca.",
@@ -180,7 +175,7 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
       "Construcción del logotipo, variantes y usos correctos.",
       "Aplicación del sistema a quince piezas gráficas y digitales.",
     ],
-    technologies: ["Illustrator", "Photoshop", "Branding", "Dirección de Arte"],
+    technologies: ["Illustrator", "Photoshop", "Branding", "Dirección de Arte", "Streaming UI"],
     gallery: [
       { src: "/assets/posterumaiverse.jpg", caption: "Afiche principal" },
       { src: "/assets/identidadumaiverse.jpg", caption: "Identidad" },
@@ -209,16 +204,16 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     title: "Videoclip",
     subtitle: "Videoclip oficial de una artista emergente independiente.",
     category: "Video · Edición y color",
+    year: "2024",
+    client: "Universidad Maimónides",
     description: [
-      "Edición y postproducción para el videoclip oficial de una artista emergente independiente. Si bien formé parte de todo el proceso de montaje y ensamble visual de la pieza, mi foco principal estuvo en el tratamiento de colorimetría y color grading, buscando consolidar una atmósfera visual envolvente y cinematográfica acorde a la narrativa estética del tema musical.",
+      "Edición y postproducción para el videoclip oficial de una artista emergente independiente. Si bien formé parte de todo el proceso de montaje y ensamble visual de la pieza, mi foco principal estuvo en el tratamiento de colorimetría y color grading, buscando consolidar una atmósfera visual envolvente y cinematográfica acorde a la narrativa estética del tema musical."
     ],
     process: [
-      "Selección y ordenamiento del material grabado.",
-      "Montaje sobre el ritmo del tema.",
       "Corrección de color y color grading cinematográfico.",
       "Exportación final para plataformas.",
     ],
-    technologies: ["Premiere Pro", "Color grading", "Montaje"],
+    technologies: ["Premiere Pro", "Color grading", "Colorimetría", "Edición Rítmica", "Montaje", "Narrativa visual"],
     gallery: [
       {
         src: "/videos/videoclipmejorado.mp4",
@@ -237,17 +232,18 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     title: "Spot Publicitario",
     subtitle: "Spot institucional y comercial.",
     category: "Video · Publicidad",
-    client: "Maimónides · Rappi",
+    year: "2024",
+    client: "Universidad Maimónides x Rappi",
     description: [
       "Montaje y postproducción completa para spot publicitario institucional y comercial. Mi trabajo se centró en la curaduría y descarte de todo el material grabado, definiendo la estructura narrativa y el ritmo de corte de cada escena para construir una pieza ágil, contundente y alineada a los objetivos comunicacionales de la campaña.",
     ],
     process: [
       "Curaduría y descarte del material grabado.",
       "Estructura narrativa del spot.",
-      "Ritmo de corte por escena.",
+      "Ritmo de cortes por escena.",
       "Postproducción y entrega final.",
     ],
-    technologies: ["Premiere Pro", "Montaje", "Postproducción"],
+    technologies: ["Premiere Pro", "Composición", "Publicidad", "Ritmo Narrativo"],
     gallery: [
       {
         src: "/videos/publicidad.mp4",
@@ -263,19 +259,20 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
   },
   {
     slug: "reels",
-    title: "Reels & Verticales",
+    title: "Reels",
     subtitle: "Videos cortos en 9:16 para redes sociales.",
     category: "Video · Redes",
+    year: "2025 - 2026",
+    client: "Varios",
     description: [
       "Edición y montaje de videos cortos para redes sociales, pensados para retener a la audiencia desde el primer segundo mediante cortes rítmicos, dinamismo visual y diseño sonoro.",
     ],
     process: [
-      "Gancho en el primer segundo.",
+      "Gancho en los primeros segundos.",
       "Cortes rítmicos sincronizados con el audio.",
       "Textos y gráficos en movimiento.",
-      "Exportación vertical optimizada para cada red.",
     ],
-    technologies: ["Premiere Pro", "After Effects", "Diseño sonoro"],
+    technologies: ["Premiere Pro", "After Effects", "Reels", "Redes Sociales"],
     gallery: [
       { src: "/videos/reel.mp4", caption: "Reel", tipo: "video" },
       { src: "/videos/reelchacadeco.mp4", caption: "Chacadeco", tipo: "video" },
@@ -285,7 +282,7 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     ],
     highlights: [
       { title: "Retención", detail: "Pensados para enganchar desde el primer segundo." },
-      { title: "Formato 9:16", detail: "Cinco piezas verticales para Reels, TikTok y Shorts." },
+      { title: "Formato 9:16", detail: "Piezas verticales para Reels, TikTok y Shorts." },
     ],
   },
   {
@@ -293,18 +290,18 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     title: "Paseo Güemes Hotel",
     subtitle: "Línea gráfica para redes sociales desarrollada desde cero.",
     category: "Redes · Contenido digital",
+    year: "2026",
     client: "Paseo Güemes Hotel",
     description: [
-      "Desarrollo desde cero de toda la línea gráfica para redes sociales, construyendo la identidad visual en base a los colores, la tipografía y el logotipo del hotel.",
-      "Diseño de las publicaciones e historias, integrando piezas promocionales pensadas para impulsar las ventas y posicionar al hotel como el lugar ideal para hospedarse al visitar Salta, manteniendo un estilo visual atractivo y coherente en cada pieza.",
+   "Desarrollo desde cero de toda la línea gráfica para redes sociales, construyendo la identidad visual en base a los colores, la tipografía y el logotipo del hotel. Diseño de las publicaciones e historias, integrando piezas promocionales pensadas para impulsar las ventas."
     ],
     process: [
       "Relevamiento de la marca: colores, tipografía y logotipo.",
       "Construcción de la línea gráfica para redes.",
-      "Historias, carruseles y publicaciones.",
+      "Psicionar al hotel como el lugar ideal para hospedarse al visitar Salta.",
       "Piezas promocionales orientadas a ventas.",
     ],
-    technologies: ["Photoshop", "Illustrator", "Instagram", "Facebook"],
+    technologies: ["Diseño Gráfico", "Creación de Contenido", "Identidad Visual", "Social Media", "Piezas Promocionales", "Diseño Estratégico"],
     gallery: piezas(
       [
         "carrusel1.jpg",
@@ -312,6 +309,7 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
         "carrusel3.jpg",
         "carrusel4.jpg",
         "Story39.jpg",
+        "story118.jpg",
         "story218.jpg",
         "story48.jpg",
         "story55.png",
@@ -327,12 +325,11 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
       "Pieza",
     ),
     highlights: [
-      { title: "17 piezas", detail: "Publicaciones, historias y promociones." },
       { title: "Desde cero", detail: "Toda la línea gráfica construida sobre la marca." },
+      { title: "Piezas visuales", detail: "Publicaciones, historias y promociones." },
     ],
     redes: [
       { label: "Instagram", href: "https://www.instagram.com/paseoguemeshotel/" },
-      { label: "Facebook", href: "" /* URL_FACEBOOK_AQUI */ },
     ],
   },
   {
@@ -340,19 +337,16 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     title: "Hotel Real Cafayate",
     subtitle: "Evolución visual del contenido sobre una identidad preexistente.",
     category: "Redes · Contenido digital",
-    year: "2024 – 2025",
+    year: "2024 – 2026",
     client: "Hotel Real Cafayate",
     description: [
-      "Diseño y evolución visual del contenido norteño, trabajando sobre una identidad gráfica preexistente.",
-      "Tomé como base la paleta y el branding establecido del hotel para diseñar publicaciones, historias y piezas promocionales, renovando el estilo visual de las campañas para lograr piezas más atractivas, modernas y alineadas a los objetivos comerciales. Incrementé un 25,81% el alcance y la comunidad.",
-    ],
+      "Diseño y evolución visual del contenido norteño, trabajando sobre una identidad gráfica preexistente. Tomé como base la paleta y el branding establecido del hotel para diseñar publicaciones, historias y piezas promocionales, renovando el estilo visual de las campañas para lograr piezas más atractivas, modernas y alineadas a los objetivos comerciales."    ],
     process: [
-      "Análisis de la identidad existente.",
       "Renovación del estilo visual de las campañas.",
       "Historias, carruseles y promociones semanales.",
       "Seguimiento de alcance y comunidad.",
     ],
-    technologies: ["Photoshop", "Illustrator", "Premiere Pro", "Instagram", "Facebook"],
+    technologies: ["Diseño Gráfico", "Creación de Contenido", "Social Media", "Diseño Estratégico"],
     gallery: piezas(
       [
         "carrusel771.jpg",
@@ -362,7 +356,6 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
         "publi177.jpg",
         "storie39hrc.jpg",
         "story107.jpg",
-        "story118.jpg",
         "story19.jpg",
         "story2171.jpg",
         "story2172.jpg",
@@ -377,16 +370,15 @@ const PROYECTOS_DISENO: ProyectoDetalle[] = [
     ),
     highlights: [
       { title: "+25,81%", detail: "De alcance y comunidad." },
-      { title: "16 piezas", detail: "Publicaciones, historias y promociones." },
+      { title: "Piezas visuales", detail: "Publicaciones, historias y promociones." },
     ],
     redes: [
       { label: "Instagram", href: "https://www.instagram.com/hotelrealcafayate/" },
-      { label: "Facebook", href: "" /* URL_FACEBOOK_AQUI */ },
     ],
   },
 ];
 
-/* Los proyectos frontend se arman desde projectsData. */
+/* Los proyectos frontend armados desde projectsData. */
 const PROYECTOS_FRONTEND: ProyectoDetalle[] = FRONTEND_PROJECTS.map((p) => ({
   slug: p.slug,
   title: p.title,
@@ -396,13 +388,15 @@ const PROYECTOS_FRONTEND: ProyectoDetalle[] = FRONTEND_PROJECTS.map((p) => ({
   description: p.description,
   process: [
     "Definición del problema y del flujo principal.",
-    "Diseño de componentes y estados de carga.",
+    "Diseño de UI y sesiones.",
     "Desarrollo y consumo de datos.",
     "Deploy en Vercel.",
   ],
   technologies: p.technologies,
   gallery: p.cover ? [{ src: p.cover, caption: p.title }] : [],
   logoInteractivo: p.logoInteractivo,
+  ajusteGaleria: "contain",
+  fondoGaleria: p.fondoOscuro ? "oscuro" : "papel",
   highlights: p.highlights,
   links: [
     ...(p.vercelUrl ? [{ label: "Ver en Vercel", href: p.vercelUrl }] : []),

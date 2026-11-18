@@ -1,7 +1,5 @@
 /* ------------------------------------------------------------------ */
-/* SECCIONES DEL ÁLBUM (páginas 05 a 12)                               */
-/* Cada sección tiene una intro (página izquierda) y sus figuritas     */
-/* (página derecha). El "slug" conecta la figurita con el modal.       */
+/* SECCIONES DEL ÁLBUM:
 /* ------------------------------------------------------------------ */
 
 export interface AlbumStat {
@@ -16,6 +14,11 @@ export interface AlbumFigure {
   stats: AlbumStat[];
   imagen?: string;
   esBrillante?: boolean;
+  fondoOscuro?: boolean;
+  imagenLlena?: boolean;
+  ajustePortada?: "cover" | "contain";
+  posicionPortada?: string;
+  portadaCompleta?: boolean;
   slug: string;
 }
 
@@ -25,18 +28,17 @@ export interface AlbumSection {
   titulo: string;
   bajada: string;
   enfoques: string[];
-  /** Imagen de la intro de la sección. */
   portada: string;
   figures: AlbumFigure[];
 }
 
-// --- PÁGINAS 05 · 06 · UX/UI ---
+// --- PÁGINAS 05 - 06 ---
 export const ALBUM_UXUI: AlbumSection = {
   id: "uxui",
   indice: "01",
   titulo: "UX / UI",
-  bajada: "Interfaces pensadas desde la persona que las usa, del flujo al último detalle.",
-  enfoques: ["Investigación y flujos", "Wireframes y prototipos", "Sistemas de diseño"],
+  bajada: "Diseño de productos digitales, wireframing interactivo, sistemas de diseño escalables y flujos de usuario optimizados para conversión.",
+  enfoques: ["Figma", "Experiencia de Usuario", "Design Systems", "Wireframing", "User Research", "Prototipado"],
   portada: "/assets/uxui.jpg",
   figures: [
     {
@@ -44,13 +46,12 @@ export const ALBUM_UXUI: AlbumSection = {
       titulo: "MyMusicDesk",
       slug: "mymusicdesk",
       descripcion:
-        "Diseño de interfaz y usabilidad para una rocola en la sala de estar de la Universidad Maimónides: selección táctil, estados claros del sistema y una sección para artistas de la universidad.",
+        "Diseño de interfaz y usabilidad para una rocola en la sala de estar de la Universidad Maimónides. El foco estuvo en resolver la interacción en pantalla mediante selección táctil para moverse, claridad en los estados del sistema y una sección para visibilizar artistas de la universidad.",
       imagen: "/assets/mymusicdesk.png",
       esBrillante: true,
       stats: [
         { label: "Categoría", value: "Rockola" },
         { label: "Año", value: "2026" },
-        { label: "Herramientas", value: "Figma · UX" },
       ],
     },
     {
@@ -64,7 +65,6 @@ export const ALBUM_UXUI: AlbumSection = {
       stats: [
         { label: "Categoría", value: "Tótem" },
         { label: "Año", value: "2025" },
-        { label: "Herramientas", value: "Figma · Accesibilidad" },
       ],
     },
     {
@@ -77,19 +77,18 @@ export const ALBUM_UXUI: AlbumSection = {
       stats: [
         { label: "Categoría", value: "App móvil" },
         { label: "Año", value: "2024" },
-        { label: "Herramientas", value: "Figma · Mobile UI" },
       ],
     },
   ],
 };
 
-// --- PÁGINAS 07 · 08 · DISEÑO GRÁFICO ---
+// --- PÁGINAS 07 - 08---
 export const ALBUM_DISENO: AlbumSection = {
   id: "diseno",
   indice: "02",
   titulo: "Diseño gráfico",
-  bajada: "Identidad, piezas y sistemas visuales con criterio y coherencia de marca.",
-  enfoques: ["Identidad visual", "Piezas gráficas", "Sistemas de marca"],
+  bajada: "Sistemas de identidad visual integral para canales de streaming (UmaiVerse), series de afiches deportivos y fotocomposición hiperrealista.",
+  enfoques: ["Photoshop", "Illustrator", "Identidad visual", "Piezas gráficas", "Branding", "Posters", "Composición"],
   portada: "/assets/disenografico.jpg",
   figures: [
     {
@@ -103,19 +102,18 @@ export const ALBUM_DISENO: AlbumSection = {
       stats: [
         { label: "Categoría", value: "Branding" },
         { label: "Entregables", value: "15 piezas" },
-        { label: "Herramientas", value: "Illustrator · Photoshop" },
       ],
     },
   ],
 };
 
-// --- PÁGINAS 09 · 10 · VIDEO ---
+// --- PÁGINAS 09 - 10 ---
 export const ALBUM_VIDEO: AlbumSection = {
   id: "video",
   indice: "03",
   titulo: "Video",
-  bajada: "Montaje, colorimetría y ritmo narrativo para piezas horizontales y verticales.",
-  enfoques: ["Edición y montaje", "Color grading", "Piezas para redes"],
+  bajada: "Montaje de reels de alto impacto para retención en redes, videoclips musicales con tratamiento de colorimetría y spots comerciales.",
+  enfoques: ["Premiere Pro", "Edición y montaje", "Color grading", "Reels", "Producciones"],
   portada: "/assets/ediciondevideos.jpg",
   figures: [
     {
@@ -125,11 +123,11 @@ export const ALBUM_VIDEO: AlbumSection = {
       descripcion:
         "Edición y postproducción del videoclip de una artista emergente, con foco en colorimetría y color grading cinematográfico.",
       imagen: "/assets/postervideoclip.png",
+      portadaCompleta: true,
       esBrillante: true,
       stats: [
         { label: "Formato", value: "Videoclip" },
         { label: "Rol", value: "Edición & Color" },
-        { label: "Herramientas", value: "Premiere Pro" },
       ],
     },
     {
@@ -139,35 +137,36 @@ export const ALBUM_VIDEO: AlbumSection = {
       descripcion:
         "Montaje y postproducción de un spot institucional y comercial: curaduría del material, estructura narrativa y ritmo de corte.",
       imagen: "/assets/posterpublicidad.png",
+      portadaCompleta: true,
       stats: [
         { label: "Formato", value: "Comercial" },
-        { label: "Cliente", value: "Maimónides · Rappi" },
-        { label: "Herramientas", value: "Premiere Pro" },
+        { label: "Cliente", value: "Universidad Maimónides x Rappi" },
       ],
     },
     {
       numero: "18",
-      titulo: "Reels & Verticales",
+      titulo: "Reels (9:16)",
       slug: "reels",
       descripcion:
         "Videos cortos para redes pensados para retener desde el primer segundo: cortes rítmicos, dinamismo visual y diseño sonoro.",
       imagen: "/assets/portada-reels.png",
+      portadaCompleta: true,
+      posicionPortada: "100% 50%",
       stats: [
         { label: "Formato", value: "9:16" },
         { label: "Piezas", value: "05" },
-        { label: "Herramientas", value: "Premiere · After Effects" },
       ],
     },
   ],
 };
 
-// --- PÁGINAS 11 · 12 · REDES ---
+// --- PÁGINAS 11 - 12--
 export const ALBUM_REDES: AlbumSection = {
   id: "redes",
   indice: "04",
   titulo: "Redes",
-  bajada: "Estrategia de comunicación visual y contenido que se ve bien y se entiende rápido.",
-  enfoques: ["Línea gráfica", "Historias y publicaciones", "Piezas promocionales"],
+  bajada: "Estrategia de comunicación visual y producción de contenido integral orientado a identidad de marca, hotelería y gastronomía.",
+  enfoques: ["Social Media", "Instagram", "Facebook", "Estrategia", "Campañas", "Identidad"],
   portada: "/assets/redessociales.jpg",
   figures: [
     {
@@ -177,6 +176,7 @@ export const ALBUM_REDES: AlbumSection = {
       descripcion:
         "Línea gráfica para redes desarrollada desde cero sobre los colores, la tipografía y el logotipo del hotel, con piezas promocionales para impulsar ventas.",
       imagen: "/assets/logopaseoguemes.jpg",
+      imagenLlena: true,
       esBrillante: true,
       stats: [
         { label: "Categoría", value: "Instagram & Facebook" },
@@ -191,6 +191,8 @@ export const ALBUM_REDES: AlbumSection = {
       descripcion:
         "Evolución visual del contenido sobre una identidad preexistente: publicaciones, historias y promociones más modernas y alineadas a objetivos comerciales.",
       imagen: "/assets/logocafayate.png",
+      fondoOscuro: true,
+      ajustePortada: "contain",
       stats: [
         { label: "Categoría", value: "Instagram & Facebook" },
         { label: "Cliente", value: "Real Cafayate" },

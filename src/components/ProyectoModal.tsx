@@ -14,14 +14,7 @@ function Rotulo({ children }: { children: string }) {
   return <h3 className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-[#FF704A]">{children}</h3>;
 }
 
-/*
- * Modal de proyecto, pensado para verse entero sin scroll en pantallas
- * de escritorio: la imagen/video ocupa todo el alto disponible y la
- * información va compacta al costado. En celulares sí hay scroll.
- *
- * Para que el carrusel arranque siempre en la primera imagen, el padre
- * lo renderiza con key={proyecto.slug}: al cambiar de proyecto se monta de cero.
- */
+
 export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps) {
   const [indice, setIndice] = useState(0);
   const botonCerrar = useRef<HTMLButtonElement>(null);
@@ -31,6 +24,12 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
   const actual = galeria[indice];
   const links = (proyecto.links ?? []).filter((link) => link.href);
   const redes = (proyecto.redes ?? []).filter((red) => red.href);
+  const galeriaDensa = total > 8;
+  const esLogo = proyecto.ajusteGaleria === "contain" || Boolean(proyecto.logoInteractivo);
+  const fondoOscuro = proyecto.fondoGaleria === "oscuro";
+  const matteLogo = fondoOscuro
+    ? "bg-[#0A1128] ring-white/15"
+    : "bg-[#E7E5DB] ring-[#1E2A44]/10";
 
   const anterior = () => setIndice((i) => (i - 1 + total) % total);
   const siguiente = () => setIndice((i) => (i + 1) % total);
@@ -42,7 +41,6 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
 
     const alPresionar = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      // Si el foco está en un video, las flechas adelantan/atrasan el video.
       if (e.target instanceof HTMLVideoElement || total < 2) return;
       if (e.key === "ArrowLeft") setIndice((i) => (i - 1 + total) % total);
       if (e.key === "ArrowRight") setIndice((i) => (i + 1) % total);
@@ -54,8 +52,6 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
       document.body.style.overflow = "";
       elementoPrevio?.focus();
     };
-    // Se ejecuta una sola vez al abrir: el modal se vuelve a montar con cada proyecto.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return createPortal(
@@ -68,9 +64,11 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
         aria-modal="true"
         aria-labelledby="modal-titulo"
         onClick={(e) => e.stopPropagation()}
-        className="modal-panel relative flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-[#F2EFE7] text-[#1E2A44] shadow-2xl shadow-black/50 lg:h-[min(90vh,760px)]"
+        className={`modal-panel relative flex max-h-[94vh] w-full flex-col overflow-hidden rounded-3xl bg-[#F2EFE7] text-[#1E2A44] shadow-2xl shadow-black/50 ${
+          galeriaDensa ? "max-w-[86rem] lg:h-[min(94vh,880px)]" : "max-w-6xl lg:h-[min(90vh,760px)]"
+        }`}
       >
-        {/* ENCABEZADO: título + datos clave en una sola franja */}
+        {/* ENCABEZADO: título + datos clave */}
         <header className="flex shrink-0 items-center justify-between gap-4 border-b border-[#1E2A44]/10 px-5 py-3 md:px-6">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[9px] font-bold uppercase tracking-[0.18em]">
@@ -94,16 +92,32 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
           </button>
         </header>
 
-        <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-[1.3fr_1fr] lg:overflow-hidden">
-          {/* CARRUSEL (imágenes y videos): ocupa todo el alto disponible */}
-          <section aria-label="Galería del proyecto" className="flex min-h-0 min-w-0 flex-col gap-2 p-4 md:p-5">
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-[#1E2A44] lg:aspect-auto lg:min-h-0 lg:flex-1">
+        <div
+          className={`flex min-h-0 flex-1 flex-col overflow-y-auto lg:grid lg:overflow-hidden ${
+            galeriaDensa ? "lg:grid-cols-[1.5fr_1fr]" : "lg:grid-cols-[1.3fr_1fr]"
+          }`}
+        >
+          <section
+            aria-label="Galería del proyecto"
+            className="flex min-w-0 shrink-0 flex-col gap-2 p-4 lg:min-h-0 md:p-5"
+          >
+            <div
+              className={`relative flex h-56 w-full shrink-0 items-center justify-center overflow-hidden sm:h-72 lg:h-auto lg:flex-1 lg:shrink ${
+                esLogo || !actual ? `rounded-2xl p-6 ring-1 ring-inset md:p-10 ${matteLogo}` : ""
+              }`}
+            >
               {!actual && (
-                <div className="flex h-full flex-col items-center justify-center gap-3 p-6">
+                <div className="flex h-full w-full flex-col items-center justify-center gap-3">
                   {proyecto.logoInteractivo ? (
-                    <LogoInteractivo logo={proyecto.logoInteractivo} tamano={120} />
+                    <LogoInteractivo logo={proyecto.logoInteractivo} tamano={132} />
                   ) : (
-                    <span className="font-display text-xl font-bold uppercase text-[#F2EFE7]/70">Portada pendiente</span>
+                    <span
+                      className={`font-display text-xl font-bold uppercase ${
+                        fondoOscuro ? "text-[#F2EFE7]/60" : "text-[#1E2A44]/50"
+                      }`}
+                    >
+                      Portada pendiente
+                    </span>
                   )}
                 </div>
               )}
@@ -116,12 +130,21 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
                   controls
                   playsInline
                   preload="metadata"
-                  className="h-full w-full bg-black object-contain"
+                  className="modal-media block max-h-full max-w-full rounded-2xl bg-[#0A1128] object-contain shadow-lg shadow-[#1E2A44]/20"
                 >
                   Tu navegador no puede reproducir este video.
                 </video>
               ) : (
-                actual && <img key={actual.src} src={actual.src} alt={actual.caption} className="h-full w-full object-contain" />
+                actual && (
+                  <img
+                    key={actual.src}
+                    src={actual.src}
+                    alt={actual.caption}
+                    className={`modal-media block max-h-full max-w-full object-contain ${
+                      esLogo ? "" : "rounded-2xl shadow-lg shadow-[#1E2A44]/20"
+                    }`}
+                  />
+                )
               )}
 
               {total > 1 && (
@@ -156,15 +179,15 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
             </div>
 
             {total > 1 && (
-              <ul className="flex shrink-0 gap-1.5 overflow-x-auto pb-1">
+              <ul className="flex shrink-0 gap-1 overflow-x-auto pb-1 [scrollbar-width:thin] sm:grid sm:grid-cols-[repeat(auto-fill,minmax(46px,1fr))] sm:overflow-visible sm:pb-0">
                 {galeria.map((item, posicion) => (
-                  <li key={item.src} className="shrink-0">
+                  <li key={item.src} className="w-11 shrink-0 sm:w-auto sm:min-w-0">
                     <button
                       type="button"
                       onClick={() => setIndice(posicion)}
                       aria-label={`Ver ${item.caption}`}
                       aria-current={posicion === indice}
-                      className={`relative block h-11 w-16 overflow-hidden rounded-lg border-2 bg-[#1E2A44] transition-opacity ${
+                      className={`relative block aspect-square w-full overflow-hidden rounded-md border-2 bg-[#1E2A44] transition-opacity ${
                         posicion === indice ? "border-[#FF704A]" : "border-transparent opacity-55 hover:opacity-100"
                       }`}
                     >
@@ -185,61 +208,76 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
             )}
           </section>
 
-          {/* INFORMACIÓN compacta */}
-          <section className="flex min-h-0 min-w-0 flex-col gap-4 border-t border-[#1E2A44]/10 p-4 md:p-5 lg:overflow-y-auto lg:border-l lg:border-t-0">
-            <div className="flex flex-col gap-2 text-[13px] leading-snug text-[#1E2A44]/85">
-              {proyecto.description.map((parrafo) => (
-                <p key={parrafo.slice(0, 40)}>{parrafo}</p>
-              ))}
-            </div>
-
-            <div>
-              <Rotulo>Proceso</Rotulo>
-              <ol className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-1.5">
-                {proyecto.process.map((paso, i) => (
-                  <li key={paso} className="flex items-start gap-1.5 text-[11.5px] leading-snug">
-                    <span className="font-mono text-[10px] font-bold text-[#FF704A]">{String(i + 1).padStart(2, "0")}</span>
-                    {paso}
-                  </li>
+        
+          <section
+            className={`flex min-w-0 shrink-0 flex-col border-t border-[#1E2A44]/10 p-4 pb-7 md:p-5 md:pb-8 lg:min-h-0 lg:overflow-hidden lg:border-l lg:border-t-0 lg:pb-5 ${
+              galeriaDensa ? "gap-2" : "gap-2.5"
+            }`}
+          >
+            <div
+              className={`flex min-h-0 flex-1 flex-col leading-snug text-[#1E2A44]/85 lg:overflow-y-auto lg:pr-1 [scrollbar-width:thin] ${
+                galeriaDensa ? "gap-2 text-[12.5px]" : "gap-2.5 text-[13px]"
+              }`}
+            >
+              <div className="flex flex-col gap-1.5">
+                {proyecto.description.map((parrafo) => (
+                  <p key={parrafo.slice(0, 40)} className={galeriaDensa ? "line-clamp-3" : "line-clamp-4"}>
+                    {parrafo}
+                  </p>
                 ))}
-              </ol>
-            </div>
+              </div>
 
-            <div>
-              <Rotulo>Destacados</Rotulo>
-              <ul className="mt-1.5 grid grid-cols-2 gap-2">
-                {proyecto.highlights.map((h) => (
-                  <li key={h.title} className="rounded-xl bg-white px-2.5 py-2">
-                    <span className="block font-display text-[12px] font-bold uppercase leading-tight">{h.title}</span>
-                    <span className="mt-0.5 line-clamp-2 block text-[11px] leading-snug text-[#1E2A44]/70">{h.detail}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <div>
+                <Rotulo>Proceso</Rotulo>
+                <ol className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-1.5">
+                  {proyecto.process.map((paso, i) => (
+                    <li key={paso} className="flex items-start gap-1.5 text-[11.5px] leading-snug">
+                      <span className="font-mono text-[10px] font-bold text-[#FF704A]">{String(i + 1).padStart(2, "0")}</span>
+                      {paso}
+                    </li>
+                  ))}
+                </ol>
+              </div>
 
-            <div>
-              <Rotulo>Herramientas</Rotulo>
-              <ul className="mt-1.5 flex flex-wrap gap-1">
-                {proyecto.technologies.map((tec) => (
-                  <li
-                    key={tec}
-                    className="rounded-full border border-[#1E2A44]/20 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em]"
-                  >
-                    {tec}
-                  </li>
-                ))}
-              </ul>
+              <div>
+                <Rotulo>Destacados</Rotulo>
+                <ul
+                  className={`mt-1.5 grid gap-1.5 ${
+                    proyecto.highlights.length >= 3 ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"
+                  }`}
+                >
+                  {proyecto.highlights.map((h) => (
+                    <li key={h.title} className="rounded-xl bg-white p-2.5">
+                      <span className="block font-display text-[11.5px] font-bold uppercase leading-tight">{h.title}</span>
+                      <span className="mt-0.5 line-clamp-2 block text-[10.5px] leading-snug text-[#1E2A44]/70">{h.detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <ul className="mt-1.5 flex flex-wrap gap-1">
+                  {proyecto.technologies.map((tec) => (
+                    <li
+                      key={tec}
+                      className="rounded-full border border-[#1E2A44]/20 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em]"
+                    >
+                      {tec}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
             {(links.length > 0 || redes.length > 0) && (
-              <div className="mt-auto flex flex-wrap gap-2 pt-1">
+              <div className="flex shrink-0 flex-wrap gap-2 border-t border-[#1E2A44]/10 pt-2.5">
                 {links.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#FF704A] px-4 py-2 font-display text-[11px] font-bold uppercase tracking-[0.08em] text-[#1E2A44] transition-colors hover:bg-[#1E2A44] hover:text-[#F2EFE7]"
+                    className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-[#FF704A] px-4 py-2 text-center font-display text-[11px] font-bold uppercase tracking-[0.08em] text-[#1E2A44] transition-colors hover:bg-[#1E2A44] hover:text-[#F2EFE7]"
                   >
                     {link.label}
                     <ArrowUpRight size={14} />
@@ -251,7 +289,7 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
                     href={red.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#1E2A44] px-4 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.08em] transition-colors hover:bg-[#1E2A44] hover:text-[#F2EFE7]"
+                    className="inline-flex max-w-full items-center gap-1.5 rounded-full border-2 border-[#1E2A44] px-4 py-1.5 text-center font-display text-[11px] font-bold uppercase tracking-[0.08em] transition-colors hover:bg-[#1E2A44] hover:text-[#F2EFE7]"
                   >
                     {red.label === "Instagram" ? <AtSign size={14} /> : <Globe size={14} />}
                     {red.label}
