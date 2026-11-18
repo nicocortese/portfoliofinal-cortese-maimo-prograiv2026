@@ -62,20 +62,20 @@ Representa la unidad visual central del diseño. Implementa un giro 3D limpio (s
 Renderizado como portal sobre document.body. Centraliza el acceso a todos los enlaces externos (Figma, Vercel, GitHub, Instagram) y adapta dinámicamente el contenedor multimedia a formatos horizontales, verticales o logotipos con contraste controlado. Incluye galería con miniaturas sincronizadas y reproducción nativa de video.
 
 * ClimaWidget.tsx (Widget meteorológico en vivo):
-Componente autónomo con una matriz de ~11 estados que combina condición climática y momento del día (mañana, tarde, noche despejada, nublada, lluviosa), renderizando ilustraciones SVG propias, iluminación ambiental animada y mensajes contextuales.
+Componente autónomo con una matriz de 11 estados que combina condición climática y momento del día (mañana, tarde, noche despejada, nublada, lluviosa), renderizando ilustraciones SVG propias, iluminación ambiental animada y mensajes contextuales.
 
 6 - **Fuente dinámica / APIS utilizadas:**
 1. OpenWeatherMap API (Clima en vivo en Buenos Aires )
 Información obtenida: Temperatura actual, mínima y máxima, sensación térmica, humedad, velocidad del viento, condición meteorológica y ciclo horario (día/noche).
 
-Comportamiento dinámico: Se consulta en vivo desde el navegador y se actualiza cada 10 minutos, alimentando los estados visuales y textuales de ClimaWidget.tsx.
+- Comportamiento dinámico: Se consulta en vivo desde el navegador y se actualiza cada 10 minutos, alimentando los estados visuales y textuales de ClimaWidget.tsx.
 
-Comportamiento ante error o ausencia de datos: Si la petición falla, se supera el límite de uso o no está definida OPENWEATHER_API_KEY, el componente captura el error silenciosamente y muestra un estado climático de respaldo coherente con Buenos Aires sin interrumpir la navegación.
+- Comportamiento ante error o ausencia de datos: Si la petición falla, se supera el límite de uso o no está definida OPENWEATHER_API_KEY, el componente captura el error silenciosamente y muestra un estado climático de respaldo coherente con Buenos Aires sin interrumpir la navegación.
 
 2. GitHub REST API (api.github.com)
-Información obtenida: Repositorios públicos del usuario nicocortese, conteo de proyectos con deploy activo, fecha exacta del último push y lenguajes predominantes, cruzando los nombres de repositorio con projectsData.ts.
+- Información obtenida: Repositorios públicos del usuario nicocortese, conteo de proyectos con deploy activo, fecha exacta del último push y lenguajes predominantes, cruzando los nombres de repositorio con projectsData.ts.
 
-Comportamiento ante error o ausencia de datos: Se ejecuta al momento de generar el sitio (index.astro) admitiendo un GITHUB_TOKEN opcional para ampliar el límite de peticiones. Ante un error de red o rate limit de la API pública, se inyectan métricas de respaldo verificadas para que la sección Frontend mantenga su integridad.
+- Comportamiento ante error o ausencia de datos: Se ejecuta al momento de generar el sitio (index.astro) admitiendo un GITHUB_TOKEN opcional para ampliar el límite de peticiones. Ante un error de red o rate limit de la API pública, se inyectan métricas de respaldo verificadas para que la sección Frontend mantenga su integridad.
 
 7 -- **Criterios de responsive y accesibilidad:**
 * Adaptación estructural por tamaño de pantalla: 
@@ -83,11 +83,11 @@ En escritorio (>= 1024px), LibroInteractivo despliega el álbum a doble página 
 
 * Accesibilidad e interacción:
 
-Uso de atributos semánticos y ARIA (role="dialog", aria-modal="true", aria-label descriptivos).
+- Uso de atributos semánticos y ARIA (role="dialog", aria-modal="true", aria-label descriptivos).
 
-Navegación por teclado habilitada (cierre de modals con tecla Escape y recorrido de galerías con flechas).
+- Navegación por teclado habilitada (cierre de modals con tecla Escape y recorrido de galerías con flechas).
 
-Ajuste manual de contraste en logotipos sobre fondos claros u oscuros (como Fixea y Hotel Real Cafayate) y aislamiento de clics (con stopPropagation) dentro de las hojas volteables.
+- Ajuste manual de contraste en logotipos sobre fondos claros u oscuros (como Fixea y Hotel Real Cafayate) y aislamiento de clics (con stopPropagation) dentro de las hojas volteables.
 
 
 8 - **Limitaciones conocidas y posibilidad de mejora**
